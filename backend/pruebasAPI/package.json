@@ -1,0 +1,20 @@
+{
+  "name": "pruebas-api",
+  "version": "1.0.0",
+  "description": "Base para API con Express",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "electron": "^40.0.0"
+  }
+}

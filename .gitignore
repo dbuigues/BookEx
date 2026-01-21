@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-/electron/node_modules
+**/node_modules/
