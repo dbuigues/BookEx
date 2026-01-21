@@ -35,6 +35,24 @@
             <h2 class="section-title">Tus Listas</h2>
         </div>
     </div>
+    
+    <div id="listas-container"></div>
+
+    <div class="contenido-indice">
+        <button id="agregar-lista">Agregar Lista</button>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span id="cerrar" class="close">&times;</span>
+                <h2>Nueva Lista</h2>
+                <form id="form-nueva-lista">
+                    <input type="text" placeholder="Nombre Lista" id="nombre-lista" required>
+                    <input type="text" placeholder="Descripción Lista" id="descripcion-lista" required>
+                    <button type="submit" id="crear-lista">Crear Lista</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer>
@@ -47,4 +65,5 @@
         </div>
     </footer>
 </body>
+<script src="../script.js"></script>
 </html>
