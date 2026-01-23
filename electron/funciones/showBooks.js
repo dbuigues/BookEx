@@ -1,7 +1,11 @@
 const isbns = [
-  "9780142437230", // Moby-Dick – Herman Melville
-  "9780451526342", // Animal Farm – George Orwell
-  "9780261103573", // The Lord of the Rings – J.R.R. Tolkien
+  
+  "9788499890951", // Rebelión en la granja – George Orwell
+  "9788497592208", // 100 años de soledad – Gabriel García Márquez
+  "9788499089980", // El viejo y el mar – Ernest Hemingway
+//   "9780142437230", // Moby-Dick – Herman Melville
+//   "9780451526342", // Animal Farm – George Orwell
+//   "9780261103573", // The Lord of the Rings – J.R.R. Tolkien
 //   "9780545425117", // The Hunger Games
 //   "9780679783268", // Don Quixote – Miguel de Cervantes (modern edition)
 //   "9780553386790"  // A Game of Thrones – George R.R. Martin
