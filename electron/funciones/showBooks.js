@@ -57,7 +57,7 @@ function createBookCard(bookData) {
   `;
   
   card.addEventListener('click', () => {
-    window.open(bookData.link, '_blank');
+    window.open(`BookDetail.html?isbn=${bookData.isbn}`, '_blank');
   });
   
   return card;

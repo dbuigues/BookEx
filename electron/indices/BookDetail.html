@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookEx - Mis reseñas</title>
+    <title>Detalle del Libro | BookEx</title>
     <link rel="stylesheet" href="../estilos/styles.css">
 </head>
 <body>
@@ -15,24 +15,29 @@
             </div>
             <nav>
                 <a href="index.html">Inicio</a>
-                <a href="Reseñas.html" class="active">Mis reseñas</a>
+                <a href="Reseñas.html">Mis reseñas</a>
                 <a href="Listas.html">Mis listas</a>
                 <a href="Perfil.html">Perfil</a>
             </nav>
         </div>
     </header>
-
     <div class="container animate-slideDown">
         <div class="page-title">
-            <h1>Mis Reseñas</h1>
-            <p>Todas las reseñas que has escrito sobre libros que has leído</p>
+            <h1 id="bookTitle">Título del libro</h1>
+            <p id="bookAuthor">Autor</p>
         </div>
-
         <div class="section">
-            <h2 class="section-title">Mis Reseñas</h2>
+            <div class="book-detail">
+                <img id="bookCover" src="../assets/imagenes/default-book.png" alt="Portada del libro" class="book-cover">
+                <div class="book-info">
+                    <p><strong>Género:</strong> <span id="bookGenre"></span></p>
+                    <p><strong>Publicado:</strong> <span id="bookYear"></span></p>
+                    <p><strong>Descripción:</strong></p>
+                    <p id="bookDescription"></p>
+                </div>
+            </div>
         </div>
     </div>
-
     <footer>
         <p>&copy; 2026 BookEx. Plataforma de reseñas y opiniones de libros.</p>
         <div class="footer-links">
@@ -42,5 +47,6 @@
             <a href="#">Términos de Uso</a>
         </div>
     </footer>
+    <script src="../funciones/bookDetail.js"></script>
 </body>
 </html>
