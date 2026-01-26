@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookEx - Mi perfil</title>
     <link rel="stylesheet" href="../estilos/styles.css">
 </head>
+
 <body>
     <!-- HEADER -->
     <header>
@@ -32,28 +34,35 @@
 
         <!-- CONTENIDO AQUÍ -->
         <div class="section">
-            <h2 class="section-title">Información Personal</h2>
+            <h2 class="section-title">Registrarse</h2>
+            <form>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="regName">Nombre de usuario</label>
+                    <input type="text" id="regName" name="regName" required placeholder="Tu nombre de usuario"><br>
+                    <label for="regEmail">Correo electrónico</label>
+                    <input type="email" id="regEmail" name="regEmail" required placeholder="Correo electrónico"><br>
+                    <label for="regPassword">Contraseña</label>
+                    <input type="password" id="regPassword" name="regPassword" required placeholder="Contraseña">
+                </div>
+                <button type="submit">
+                    Registrarse
+                </button>
+            </form>
         </div>
 
         <!-- Formulario de inicio de sesión -->
-        <div id="loginForm" class="section hidden animate-slideDown" style="max-width: 500px; margin: 0 auto;">
+        <div class="section">
             <h2 class="section-title">Iniciar Sesión</h2>
-            <form id="form">
+            <form>
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="email" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-text);">Correo electrónico</label>
-                    <input type="email" id="email" name="email" required placeholder="usuario@ejemplo.com" 
-                           style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 15px; transition: border-color 0.3s;">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" required placeholder="usuario@ejemplo.com">
                 </div>
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="password" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-text);">Contraseña</label>
-                    <input type="password" id="password" name="password" required placeholder="••••••••" 
-                           style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 15px; transition: border-color 0.3s;">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
                 </div>
-                <button type="submit" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
-                    Iniciar Sesión
-                </button>
-                <div class="error" id="errorMsg" style="display: none; color: var(--secondary-color); margin-top: 15px; padding: 10px; background-color: #ffe6e6; border-radius: 6px; font-size: 14px;"></div>
-                <div class="success" id="successMsg" style="display: none; color: #27ae60; margin-top: 15px; padding: 10px; background-color: #e6ffe6; border-radius: 6px; font-size: 14px;"></div>
+                <button type="submit">Iniciar Sesión</button>
             </form>
         </div>
 
@@ -66,27 +75,27 @@
 
             <div class="section animate-slideDown" style="max-width: 700px; margin: 0 auto;">
                 <h2 class="section-title" id="userName"></h2>
-                
+
                 <div style="display: grid; gap: 15px;">
-                    <div class="info-row" style="display: flex; justify-content: space-between; padding: 15px; background-color: var(--light-bg); border-radius: 8px;">
-                        <span class="info-label" style="font-weight: 600; color: var(--primary-color);">📧 Email:</span>
-                        <span class="info-value" id="userEmail" style="color: var(--dark-text);"></span>
+                    <div class="info-row">
+                        <span class="info-label">📧 Email:</span>
+                        <span class="info-value" id="userEmail"></span>
                     </div>
-                    <div class="info-row" style="display: flex; justify-content: space-between; padding: 15px; background-color: var(--light-bg); border-radius: 8px;">
-                        <span class="info-label" style="font-weight: 600; color: var(--primary-color);">🆔 ID:</span>
-                        <span class="info-value" id="userId" style="color: var(--dark-text); font-family: 'Courier New', monospace;"></span>
+                    <div class="info-row">
+                        <span class="info-label">🆔 ID:</span>
+                        <span class="info-value" id="userId"></span>
                     </div>
-                    <div class="info-row" style="display: flex; justify-content: space-between; padding: 15px; background-color: var(--light-bg); border-radius: 8px;">
-                        <span class="info-label" style="font-weight: 600; color: var(--primary-color);">🕐 Último acceso:</span>
-                        <span class="info-value" id="lastLogin" style="color: var(--dark-text);"></span>
+                    <div class="info-row">
+                        <span class="info-label">🕐 Último acceso:</span>
+                        <span class="info-value" id="lastLogin"></span>
                     </div>
-                    <div class="info-row" style="display: flex; justify-content: space-between; padding: 15px; background-color: var(--light-bg); border-radius: 8px;">
-                        <span class="info-label" style="font-weight: 600; color: var(--primary-color);">📚 Libros prestados:</span>
-                        <span class="info-value" id="userBooks" style="color: var(--dark-text);"></span>
+                    <div class="info-row">
+                        <span class="info-label">📚 Libros prestados:</span>
+                        <span class="info-value" id="userBooks"></span>
                     </div>
                 </div>
 
-                <button onclick="logout()" class="logout-btn" style="width: 100%; margin-top: 25px; padding: 14px; background: linear-gradient(135deg, var(--secondary-color) 0%, #c0392b 100%); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+                <button onclick="logout()" class="logout-btn">
                     Cerrar Sesión
                 </button>
             </div>
@@ -106,4 +115,5 @@
     </footer>
     <script src="../funciones/login.js"></script>
 </body>
+
 </html>
