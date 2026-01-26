@@ -42,11 +42,15 @@
                     <label for="regEmail">Correo electrónico</label>
                     <input type="email" id="regEmail" name="regEmail" required placeholder="Correo electrónico"><br>
                     <label for="regPassword">Contraseña</label>
-                    <input type="password" id="regPassword" name="regPassword" required placeholder="Contraseña">
+                    <input type="password" id="regPassword" name="regPassword" required placeholder="Contraseña"><br>
+                    <label for="regFotoPerfil">Foto de Perfil:</label>
+                    <input type="file" id="regFotoPerfil" accept="image/*">
                 </div>
-                <button type="submit">
+                <button type="submit" id="regUserButton">
                     Registrarse
                 </button>
+                <span class="form-group" id="RegisterError"></span>
+                <script src="../funciones/register.js"></script>
             </form>
         </div>
 

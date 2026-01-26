@@ -23,7 +23,8 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
-    @Column(name = "foto_perfil")
+
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
