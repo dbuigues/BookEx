@@ -6,12 +6,23 @@ import org.example.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
+
+    public String encrypt(String txtAEncriptar) throws NoSuchAlgorithmException {
+        byte[] bytesTxt = txtAEncriptar.getBytes(StandardCharsets.UTF_8);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] txtMD5 = md.digest(bytesTxt);
+        return Base64.getEncoder().encodeToString(txtMD5);
+    }
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -30,13 +41,15 @@ public class UsuarioService {
         return usuarioRepository.findByCorreo(correo).map(this::convertToDTO);
     }
 
-    public UsuarioDTO save(UsuarioDTO usuarioDTO) {
+    public UsuarioDTO save(UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
+        usuarioDTO.setContrasena(encrypt(usuarioDTO.getContrasena()));
         Usuario usuario = convertToEntity(usuarioDTO);
         Usuario savedUsuario = usuarioRepository.save(usuario);
         return convertToDTO(savedUsuario);
     }
 
-    public UsuarioDTO update(Long id, UsuarioDTO usuarioDTO) {
+    public UsuarioDTO update(Long id, UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
+        usuarioDTO.setContrasena(encrypt(usuarioDTO.getContrasena()));
         return usuarioRepository.findById(id)
                 .map(usuario -> {
                     usuario.setNombre(usuarioDTO.getNombre());

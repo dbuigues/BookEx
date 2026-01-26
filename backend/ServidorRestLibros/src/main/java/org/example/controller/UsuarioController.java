@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -37,13 +38,13 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
         UsuarioDTO createdUsuario = usuarioService.save(usuarioDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUsuario);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
         UsuarioDTO updatedUsuario = usuarioService.update(id, usuarioDTO);
         if (updatedUsuario != null) {
             return ResponseEntity.ok(updatedUsuario);
