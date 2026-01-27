@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -41,6 +42,18 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
         UsuarioDTO createdUsuario = usuarioService.save(usuarioDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUsuario);
+    }
+    @PostMapping("/login")
+    public Optional<ResponseEntity<?>> loginUsuario(@RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
+        String encryptedPassword = usuarioService.encrypt(usuarioDTO.getContrasena());
+        return usuarioService.findByCorreo(usuarioDTO.getCorreo())
+                .map(usuario -> {
+                    if (usuario.getContrasena().equals(encryptedPassword)) {
+                        return ResponseEntity.ok(usuario.getCorreo());
+                    } else {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                    }
+                });
     }
 
     @PutMapping("/{id}")
