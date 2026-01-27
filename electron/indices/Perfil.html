@@ -60,13 +60,15 @@
             <form>
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" name="email" required placeholder="usuario@ejemplo.com">
+                    <input type="email" id="logEmail" name="email" required placeholder="usuario@ejemplo.com">
                 </div>
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                    <input type="password" id="logPassword" name="password" required placeholder="••••••••">
                 </div>
-                <button type="submit">Iniciar Sesión</button>
+                <button type="submit" id="LogUserButton">Iniciar Sesión</button>
+                <span class="form-group" id="LoginError"></span>
+                <script src="../funciones/login.js"></script>
             </form>
         </div>
 
