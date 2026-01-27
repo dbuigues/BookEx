@@ -36,6 +36,16 @@ public class ListaService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+    public List<ListaDTO> findByUsuarioCorreo(String correoUsuario) {
+        Usuario usuario = usuarioRepository.findByCorreo(correoUsuario).orElse(null);
+        if (usuario == null) {
+            return List.of();
+        }
+        Long idUsuario = usuario.getIdUsuario();
+        return listaRepository.findByUsuarioIdUsuario(idUsuario).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     public ListaDTO save(ListaDTO listaDTO) {
         Lista lista = convertToEntity(listaDTO);

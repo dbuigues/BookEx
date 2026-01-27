@@ -34,6 +34,11 @@ public class ListaController {
         List<ListaDTO> listas = listaService.findByUsuarioId(idUsuario);
         return ResponseEntity.ok(listas);
     }
+    @GetMapping("/usuario/bycorreo/{correoUsuario}")
+    public ResponseEntity<List<ListaDTO>> getListasByUsuarioId(@PathVariable String correoUsuario) {
+        List<ListaDTO> listas = listaService.findByUsuarioCorreo(correoUsuario);
+        return ResponseEntity.ok(listas);
+    }
 
     @PostMapping
     public ResponseEntity<ListaDTO> createLista(@RequestBody ListaDTO listaDTO) {

@@ -33,7 +33,7 @@
         </div>
 
         <!-- CONTENIDO AQUÍ -->
-        <div class="section">
+        <div class="section" id="registerSection">
             <h2 class="section-title">Registrarse</h2>
             <form>
                 <div class="form-group" style="margin-bottom: 20px;">
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Formulario de inicio de sesión -->
-        <div class="section">
+        <div class="section" id="loginSection">
             <h2 class="section-title">Iniciar Sesión</h2>
             <form>
                 <div class="form-group" style="margin-bottom: 20px;">
@@ -75,35 +75,7 @@
         <!-- Información del usuario logueado -->
         <div id="userInfo" class="hidden">
             <div class="page-title">
-                <h1>Bienvenido de nuevo</h1>
-                <p>Información de tu cuenta</p>
-            </div>
-
-            <div class="section animate-slideDown" style="max-width: 700px; margin: 0 auto;">
-                <h2 class="section-title" id="userName"></h2>
-
-                <div style="display: grid; gap: 15px;">
-                    <div class="info-row">
-                        <span class="info-label">📧 Email:</span>
-                        <span class="info-value" id="userEmail"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">🆔 ID:</span>
-                        <span class="info-value" id="userId"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">🕐 Último acceso:</span>
-                        <span class="info-value" id="lastLogin"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">📚 Libros prestados:</span>
-                        <span class="info-value" id="userBooks"></span>
-                    </div>
-                </div>
-
-                <button onclick="logout()" class="logout-btn">
-                    Cerrar Sesión
-                </button>
+                <h1 id="welcomeUser">Bienvenido de nuevo</h1>
             </div>
         </div>
 
@@ -119,7 +91,7 @@
             <a href="#">Términos de Uso</a>
         </div>
     </footer>
-    <script src="../funciones/login.js"></script>
+    <script src="../funciones/profileController.js"></script>
 </body>
 
 </html>
