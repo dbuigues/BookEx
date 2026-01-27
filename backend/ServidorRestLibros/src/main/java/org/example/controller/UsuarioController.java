@@ -37,6 +37,22 @@ public class UsuarioController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/getpfp/{correo}")
+    public ResponseEntity<byte[]> getPFPByCorreo(@PathVariable String correo) {
+        Optional<UsuarioDTO> usuarioOpt = usuarioService.findByCorreo(correo);
+        if (usuarioOpt.isPresent()) {
+            String imagenBase64 = usuarioOpt.get().getFotoPerfil();
+            if (imagenBase64 != null && !imagenBase64.isEmpty()) {
+                byte[] imagenBytes = java.util.Base64.getDecoder().decode(imagenBase64);
+                return ResponseEntity
+                        .ok()
+                        .header("Content-Type", "image/png")
+                        .body(imagenBytes);
+            }
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
