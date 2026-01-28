@@ -37,6 +37,12 @@ public class ListaService {
                 .collect(Collectors.toList());
     }
 
+    public List<ListaDTO> findByCorreo(String correo){
+        return listaRepository.findByCorreo(correo).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public ListaDTO save(ListaDTO listaDTO) {
         Lista lista = convertToEntity(listaDTO);
         Lista savedLista = listaRepository.save(lista);
