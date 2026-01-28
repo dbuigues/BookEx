@@ -74,7 +74,6 @@ async function loadBooks() {
   
   // Agregar spinner de carga
   container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Cargando libros...</p>';
-  
   const books = [];
   
   // Obtener datos de todos los libros
@@ -85,7 +84,7 @@ async function loadBooks() {
       console.log("libro insertado");
     }
     // Pequeño delay para no sobrecargar la API
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
   
   // Limpiar contenedor
