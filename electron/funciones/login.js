@@ -25,6 +25,7 @@ async function login(userToLogin) {
             document.getElementById('logPassword').value = '';
             sessionStorage.setItem('sesionActiva', data.body);
             console.log(sessionStorage.getItem('sesionActiva'));
+            location.reload();
         } else {
             console.log('Error al iniciar sesion', data);
             errorDiv.innerText = `Error: Correo o contraseña incorrectos.`;

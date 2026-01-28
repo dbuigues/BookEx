@@ -49,6 +49,12 @@ header {
     align-items: center;
 }
 
+.profile-pic{
+    border-radius: 100%;
+    max-height: 350px;
+    max-width: auto;
+}
+
 .logo {
     display: flex;
     align-items: center;
