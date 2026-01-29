@@ -26,14 +26,12 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <div class="container animate-slideDown">
-        <div class="page-title">
-            <h1>¡Bienvenido a BookEx!</h1>
-            <p>Tu plataforma para compartir opiniones sobre libros</p>
-        </div>
 
         <div class="section">
-            <h2 class="section-title">Populares esta semana</h2>
+            <h2 class="section-title">Buscar por nombre</h2>
+            <input type="text" id="searchInput" placeholder="Nombre del libro..." class="search-input">            
             <div class="cards-grid" id="booksContainer"></div>
+            <script src="../funciones/searchBooks.js"></script>
         </div>
     </div>
 
@@ -41,7 +39,5 @@
     <footer>
         <p>&copy; 2026 BookEx. Plataforma de reseñas y opiniones de libros.</p>
     </footer>
-    <script src="../funciones/showBooks.js"></script>
 </body>
-<script src="../script.js"></script>
 </html>

@@ -39,8 +39,7 @@ public class ListaController {
         List<ListaDTO> listas = listaService.findByUsuarioCorreo(correoUsuario);
         return ResponseEntity.ok(listas);
     }
-
-
+    
     @PostMapping
     public ResponseEntity<ListaDTO> createLista(@RequestBody ListaDTO listaDTO) {
         ListaDTO createdLista = listaService.save(listaDTO);

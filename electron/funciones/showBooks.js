@@ -74,22 +74,14 @@ async function loadBooks() {
   
   // Agregar spinner de carga
   container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Cargando libros...</p>';
-  const books = [];
-  
-  // Obtener datos de todos los libros
-  for (const isbn of isbns) {
-    const bookData = await getBookData(isbn);
-    if (bookData) {
-      books.push(bookData);
-      console.log("libro insertado");
-    }
-    // Pequeño delay para no sobrecargar la API
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
-  
+
+  // Obtener datos de todos los libros en paralelo
+  const bookPromises = isbns.map(isbn => getBookData(isbn));
+  const books = (await Promise.all(bookPromises)).filter(Boolean);
+
   // Limpiar contenedor
   container.innerHTML = '';
-  
+
   // Crear y agregar tarjetas
   books.forEach(book => {
     const card = createBookCard(book);
