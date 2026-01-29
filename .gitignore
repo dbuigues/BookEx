@@ -14,3 +14,4 @@
 .cxx
 local.properties
 **/node_modules/
+backend/ServidorRestLibros/.idea/inspectionProfiles/Project_Default.xml
