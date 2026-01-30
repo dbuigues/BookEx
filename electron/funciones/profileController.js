@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!sessionStorage.getItem('sesionActiva')) {
         console.log('No hay sesión activa.');
 
-        registerSection.style.display = 'block';
+        registerSection.style.display = 'none';
         loginSection.style.display = 'block';
         userInfo.style.display = 'none';
 
@@ -22,4 +22,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         userPFP.src = `http://localhost:8080/api/usuarios/getpfp/${sessionStorage.getItem('sesionActiva')}`;
         userPFP.alt = `Foto de perfil de ${sessionStorage.getItem('sesionActiva')}`;
     }
+});
+
+document.getElementById("cambiarAIniciar").addEventListener("click",()=>{
+    loginSection.style.display = 'block';
+    registerSection.style.display = 'none';
+    userInfo.style.display = 'none';
+});
+
+document.getElementById("cambiarARegistrar").addEventListener("click",()=>{
+    loginSection.style.display = 'none';
+    registerSection.style.display = 'block';
+    userInfo.style.display = 'none';
 });
