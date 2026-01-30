@@ -29,9 +29,13 @@
 
         <div class="section">
             <h2 class="section-title">Buscar por nombre</h2>
-            <input type="text" id="searchInput" placeholder="Nombre del libro..." class="search-input">            
-            <div class="cards-grid" id="booksContainer"></div>
-            <script src="../funciones/searchBooks.js"></script>
+            <input type="text" id="searchNameInput" placeholder="Nombre del libro..." class="search-input">            
+            <div class="cards-grid" id="booksNameContainer"></div>
+        </div>
+        <div class="section">
+            <h2 class="section-title">Buscar por isbn</h2>
+            <input type="text" id="searchISBNInput" placeholder="ISBN del libro..." class="search-input">            
+            <div class="cards-grid" id="booksISBNContainer"></div>
         </div>
     </div>
 
@@ -39,5 +43,6 @@
     <footer>
         <p>&copy; 2026 BookEx. Plataforma de reseñas y opiniones de libros.</p>
     </footer>
+    <script src="../funciones/searchBooks.js"></script>
 </body>
 </html>

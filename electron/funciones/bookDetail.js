@@ -18,7 +18,7 @@ async function fetchBookData(isbn) {
                 genre: book.categories ? book.categories.join(', ') : 'Género desconocido',
                 year: book.publishedDate || 'Año desconocido',
                 description: book.description || 'Descripción no disponible',
-                cover: book.imageLinks?.thumbnail || '../assets/imagenes/default-book.png',
+                cover: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png',
                 reviews: book.ratingsCount || 'Sin reseñas'
             };
         }

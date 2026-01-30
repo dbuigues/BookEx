@@ -29,6 +29,36 @@ let searchBooksByName = async (nombre) => {
     return [];
   }
 }
+let searchBooksByISBN = async (isbn) => {
+    console.log("Cargando libros...");
+    try {
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}`);
+    const data = await response.json();
+    if (data.items && data.items.length > 0) {
+      return data.items.map(item => {
+        const book = item.volumeInfo;
+        let thumbnail = '../assets/imagenes/logo.png';
+        if (book.imageLinks && book.imageLinks.thumbnail) {
+          thumbnail = book.imageLinks.thumbnail;
+        }
+        return {
+          isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
+          title: book.title || 'Título no disponible',
+          author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
+          description: book.description || 'Descripción no disponible',
+          thumbnail: thumbnail,
+          link: book.previewLink || '#'
+        };
+      });
+    }
+    return [];
+  } catch (error) {
+    console.error(`Error al buscar libros por nombre ${nombre}:`, error);
+    return [];
+  }
+  
+}
+
 
 // Función para crear una tarjeta de libro
 let createBookCard = (bookData) => {
@@ -58,45 +88,14 @@ let createBookCard = (bookData) => {
   return card;
 }
 
-// Función para cargar todos los libros
-let loadBooks = async () => {
-  const container = document.getElementById('booksContainer');
-  
-  if (!container) {
-    console.error('Contenedor de libros no encontrado');
-    return;
-  }
-  
-  // Agregar spinner de carga
-  container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Cargando libros...</p>';
-  const books = [];
-  
-  // Obtener datos de todos los libros
-  for (const isbn of isbns) {
-    const bookData = await getBookData(isbn);
-    if (bookData) {
-      books.push(bookData);
-      console.log("libro insertado");
-    }
-    // Pequeño delay para no sobrecargar la API
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
-  
-  // Limpiar contenedor
-  container.innerHTML = '';
-  // Crear y agregar tarjetas
-  books.forEach(book => {
-    const card = createBookCard(book);
-    container.appendChild(card);
-  });
-}
 
 let debounceTimeout;
-document.getElementById('searchInput').addEventListener('input', (event) => {
+
+document.getElementById('searchNameInput').addEventListener('input', (event) => {
   clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(async () => {
     const query = event.target.value.trim();
-    const container = document.getElementById('booksContainer');
+    const container = document.getElementById('booksNameContainer');
     container.innerHTML = '';
     if (query.length === 0) {
       return;
@@ -113,5 +112,30 @@ document.getElementById('searchInput').addEventListener('input', (event) => {
       const card = createBookCard(book);
       container.appendChild(card);
     });
-  }, 400); // 400 ms de espera tras dejar de escribir
+  }, 500); // 500 ms de espera tras dejar de escribir
+});
+
+el = document.getElementById('searchISBNInput')
+el.addEventListener('input', (event) => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(async () => {
+    const query = event.target.value.trim();
+    const container = document.getElementById('booksISBNContainer');
+    container.innerHTML = '';
+    if (query.length === 0) {
+      return;
+    }
+    // Mostrar spinner de carga
+    container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Buscando libros...</p>';
+    const books = await searchBooksByISBN(query);
+    container.innerHTML = '';
+    if (books.length === 0) {
+      container.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">No se encontraron resultados.</p>';
+      return;
+    }
+    books.forEach(book => {
+      const card = createBookCard(book);
+      container.appendChild(card);
+    });
+  }, 500); // 500 ms de espera tras dejar de escribir
 });
