@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.dto.UsuarioDTO;
+import org.example.email.BookExSaluda;
 import org.example.model.Usuario;
 import org.example.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,16 @@ public class UsuarioService {
         return usuarioRepository.findByCorreo(correo).map(this::convertToDTO);
     }
 
+    @Autowired
+    private BookExSaluda bookExSaluda;
+
     public UsuarioDTO save(UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
         usuarioDTO.setContrasena(encrypt(usuarioDTO.getContrasena()));
         Usuario usuario = convertToEntity(usuarioDTO);
         Usuario savedUsuario = usuarioRepository.save(usuario);
+
+        //bookExSaluda.saludar(savedUsuario); // Enviar correo de bienvenida, desactivado porque en clase peta
+
         return convertToDTO(savedUsuario);
     }
 
