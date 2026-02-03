@@ -1,6 +1,8 @@
 // bookDetail.js
 // Este script carga la información del libro seleccionado desde la API de Google Books
 
+const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
+
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);

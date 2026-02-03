@@ -32,14 +32,14 @@
         <!-- CONTENIDO AQUÍ -->
         <div class="section" id="registerSection">
             <h2 class="section-title">Registrarse</h2>
-            <form>
+            <form onsubmit="return false">
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="regName">Nombre de usuario</label>
-                    <input type="text" id="regName" name="regName" required placeholder="Tu nombre de usuario"><br>
+                    <input type="text" id="regName" name="regName" required placeholder="Tu nombre de usuario" maxlength="255"><br>
                     <label for="regEmail">Correo electrónico</label>
-                    <input type="email" id="regEmail" name="regEmail" required placeholder="Correo electrónico"><br>
+                    <input type="email" id="regEmail" name="regEmail" required placeholder="Correo electrónico" maxlength="255"><br>
                     <label for="regPassword">Contraseña</label>
-                    <input type="password" id="regPassword" name="regPassword" required placeholder="Contraseña"><br>
+                    <input type="password" id="regPassword" name="regPassword" required placeholder="Contraseña" maxlength="255"><br>
                     <label for="regFotoPerfil">Foto de Perfil:</label>
                     <input type="file" id="regFotoPerfil" accept="image/*">
                 </div>
@@ -61,7 +61,7 @@
         <!-- Formulario de inicio de sesión -->
         <div class="section" id="loginSection">
             <h2 class="section-title">Iniciar Sesión</h2>
-            <form>
+            <form onsubmit="return false">
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="email">Correo electrónico</label>
                     <input type="email" id="logEmail" name="email" required placeholder="usuario@ejemplo.com">
