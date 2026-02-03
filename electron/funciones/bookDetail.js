@@ -8,7 +8,7 @@ function getQueryParam(param) {
 
 async function fetchBookData(isbn) {
     try {
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${API_KEY}`);
         const data = await response.json();
         if (data.items && data.items.length > 0) {
             const book = data.items[0].volumeInfo;

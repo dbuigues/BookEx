@@ -10,11 +10,12 @@ const isbns = [
 //   "9780679783268", // Don Quixote – Miguel de Cervantes (modern edition)
 //   "9780553386790"  // A Game of Thrones – George R.R. Martin
 ];
+const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
 
 // Función para obtener datos del libro desde Google Books API
 async function getBookData(isbn) {
   try {
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${API_KEY}`);
     const data = await response.json();
     
     if (data.items && data.items.length > 0) {

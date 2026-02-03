@@ -1,11 +1,13 @@
 // Función para obtener datos del libro desde Google Books API
 // Ahora devuelve un array de coincidencias
-let searchBooksByName = async (nombre) => {
-    console.log("Cargando libros...");
+const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
 
+let searchBooksByName = async (nombre) => {
+    
   try {
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(nombre)}`);
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(nombre)}&key=${API_KEY}`);
     const data = await response.json();
+    console.log("Cargando libros...");
     if (data.items && data.items.length > 0) {
       return data.items.map(item => {
         const book = item.volumeInfo;
@@ -32,7 +34,7 @@ let searchBooksByName = async (nombre) => {
 let searchBooksByISBN = async (isbn) => {
     console.log("Cargando libros...");
     try {
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}`);
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&key=${API_KEY}`);
     const data = await response.json();
     if (data.items && data.items.length > 0) {
       return data.items.map(item => {

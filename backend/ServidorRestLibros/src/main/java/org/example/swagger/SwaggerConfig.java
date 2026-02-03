@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Configuración Swagger para la generación de documentación de la API REST
  * DOCUMENTACIÓN EN:
- * http://localhost:8080/swagger-ui/
+ * http://localhost:8080/swagger-ui/index.html
  * (donde localhost:8080 es la URL base de la aplicación)
  */
 
