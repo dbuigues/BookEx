@@ -11,7 +11,6 @@ sealed class AuthIntent {
     // Intents de navegación entre pantallas
     data object NavigateToLogin : AuthIntent()
     data object NavigateToRegister : AuthIntent()
-
     // Intents de Login
     data class UpdateLoginEmail(val email: String) : AuthIntent()
     data class UpdateLoginPassword(val password: String) : AuthIntent()

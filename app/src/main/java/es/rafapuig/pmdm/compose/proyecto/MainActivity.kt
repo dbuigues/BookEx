@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import es.rafapuig.pmdm.compose.proyecto.feature.auth.view.AuthScreen
+import es.rafapuig.pmdm.compose.proyecto.navigation.NavigationRoot
 import es.rafapuig.pmdm.compose.proyecto.ui.theme.ProyectoTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,11 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProyectoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AuthScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                NavigationRoot()
             }
         }
     }
