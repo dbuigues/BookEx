@@ -61,6 +61,35 @@ let searchBooksByISBN = async (isbn) => {
   
 }
 
+let searchBooksByAuthor = async (author) => {
+  console.log("Cargando libros...");
+  try {
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${encodeURIComponent(author)}&key=${API_KEY}`);
+    const data = await response.json();
+    if (data.items && data.items.length > 0) {
+      return data.items.map(item => {
+        const book = item.volumeInfo;
+        let thumbnail = '../assets/imagenes/logo.png';
+        if (book.imageLinks && book.imageLinks.thumbnail) {
+          thumbnail = book.imageLinks.thumbnail;
+        }
+        return {
+          isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
+          title: book.title || 'Título no disponible',
+          author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
+          description: book.description || 'Descripción no disponible',
+          thumbnail: thumbnail,
+          link: book.previewLink || '#'
+        };
+      });
+    }
+    return [];
+  } catch (error) {
+    console.error(`Error al buscar libros por autor ${author}:`, error);
+    return [];
+  }
+}
+
 
 // Función para crear una tarjeta de libro
 let createBookCard = (bookData) => {
@@ -105,6 +134,29 @@ document.getElementById('searchNameInput').addEventListener('input', (event) => 
     // Mostrar spinner de carga
     container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Buscando libros...</p>';
     const books = await searchBooksByName(query);
+    container.innerHTML = '';
+    if (books.length === 0) {
+      container.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">No se encontraron resultados.</p>';
+      return;
+    }
+    books.forEach(book => {
+      const card = createBookCard(book);
+      container.appendChild(card);
+    });
+  }, 500); // 500 ms de espera tras dejar de escribir
+});
+
+document.getElementById('searchAuthorInput').addEventListener('input', (event) => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(async () => {
+    const query = event.target.value.trim();
+    const container = document.getElementById('booksAuthorContainer');
+    container.innerHTML = '';
+    if (query.length === 0) {
+      return;
+    }
+    container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Buscando libros...</p>';
+    const books = await searchBooksByAuthor(query);
     container.innerHTML = '';
     if (books.length === 0) {
       container.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">No se encontraron resultados.</p>';
