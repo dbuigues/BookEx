@@ -1,20 +1,25 @@
-# Usamos Java 17
-FROM eclipse-temurin:17-jdk
+# 1. Imagen Maven + Java
+FROM maven:3.9.5-eclipse-temurin-17 AS build
 
-# Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiamos todo el proyecto
+# Copiamos el proyecto
 COPY . .
 
-# Compilamos la app
-RUN ./mvnw clean package -DskipTests
+# Compilamos
+RUN mvn clean package -DskipTests
 
-# Render usa la variable PORT
+# 2. Imagen Java más ligera
+FROM eclipse-temurin:17-jdk
+
+WORKDIR /app
+
+# Copiamos el .jar desde la fase anterior
+COPY --from=build /app/target/*.jar app.jar
+
+# Puerto
 ENV PORT=8080
-
-# Exponemos el puerto (informativo)
 EXPOSE 8080
 
-# Arranque de la app
-CMD ["sh", "-c", "java -jar target/*.jar"]
+# Arranque
+CMD ["sh", "-c", "java -jar app.jar"]
