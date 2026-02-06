@@ -1,14 +1,13 @@
 const isbns = [
-  
+
   "9788499890951", // Rebelión en la granja – George Orwell
   "9788497592208", // 100 años de soledad – Gabriel García Márquez
   "9788499089980", // El viejo y el mar – Ernest Hemingway
-//   "9780142437230", // Moby-Dick – Herman Melville
-//   "9780451526342", // Animal Farm – George Orwell
-//   "9780261103573", // The Lord of the Rings – J.R.R. Tolkien
-//   "9780545425117", // The Hunger Games
-//   "9780679783268", // Don Quixote – Miguel de Cervantes (modern edition)
-//   "9780553386790"  // A Game of Thrones – George R.R. Martin
+  // "9780451526342", // Animal Farm – George Orwell
+  // "9780261103573", // The Lord of the Rings – J.R.R. Tolkien
+  // "9780545425117", // The Hunger Games
+  // "9780679783268", // Don Quixote – Miguel de Cervantes (modern edition)
+  // "9780553386790"  // A Game of Thrones – George R.R. Martin
 ];
 const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
 
@@ -17,10 +16,11 @@ async function getBookData(isbn) {
   try {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${API_KEY}`);
     const data = await response.json();
-    
+
     if (data.items && data.items.length > 0) {
       const book = data.items[0].volumeInfo;
       return {
+        id: data.items[0].id,
         isbn: isbn,
         title: book.title || 'Título no disponible',
         author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
@@ -40,12 +40,12 @@ async function getBookData(isbn) {
 function createBookCard(bookData) {
   const card = document.createElement('div');
   card.className = 'book-card';
-  
-  const description = bookData.description.length > 100 
-    ? bookData.description.substring(0, 100) + '...' 
+
+  const description = bookData.description.length > 100
+    ? bookData.description.substring(0, 100) + '...'
     : bookData.description;
 
-    // let newThumbnail = bookData.thumbnail.replace("&source","?fife=w400-h600&source");
+  // let newThumbnail = bookData.thumbnail.replace("&source","?fife=w400-h600&source");
 
   card.innerHTML = `
     <img src="${bookData.thumbnail}" alt="${bookData.title}" class="book-cover" onerror="this.src='../imagenes/placeholder.png'">
@@ -56,23 +56,23 @@ function createBookCard(bookData) {
       <p class="book-isbn">ISBN: ${bookData.isbn}</p>
     </div>
   `;
-  
+
   card.addEventListener('click', () => {
-    window.open(`BookDetail.html?isbn=${bookData.isbn}`, '_blank');
+    window.open(`BookDetail.html?id=${bookData.id}`, '_blank');
   });
-  
+
   return card;
 }
 
 // Función para cargar todos los libros
 async function loadBooks() {
   const container = document.getElementById('booksContainer');
-  
+
   if (!container) {
     console.error('Contenedor de libros no encontrado');
     return;
   }
-  
+
   // Agregar spinner de carga
   container.innerHTML = '<img width="30px" style="grid-column:1; margin: auto; margin-right: 0px" src="../assets/loading.gif"><p style="grid-column: 2/-1; padding: 40px; padding-left:20px">Cargando libros...</p>';
 

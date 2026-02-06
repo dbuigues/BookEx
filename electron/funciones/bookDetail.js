@@ -8,12 +8,13 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
-async function fetchBookData(isbn) {
+async function fetchBookData(id) {
     try {
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${API_KEY}`);
+        console.log(id);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}?key=${API_KEY}`);
         const data = await response.json();
-        if (data.items && data.items.length > 0) {
-            const book = data.items[0].volumeInfo;
+        if (data && data.volumeInfo) {
+            const book = data.volumeInfo;
             return {
                 title: book.title || 'Título no disponible',
                 author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
@@ -32,12 +33,12 @@ async function fetchBookData(isbn) {
 }
 
 async function loadBookDetail() {
-    const isbn = getQueryParam('isbn');
-    if (!isbn) {
+    const id = getQueryParam('id');
+    if (!id) {
         document.getElementById('bookTitle').textContent = 'Libro no encontrado';
         return;
     }
-    const book = await fetchBookData(isbn);
+    const book = await fetchBookData(id);
     if (!book) {
         document.getElementById('bookTitle').textContent = 'No se encontraron datos para este libro';
         return;

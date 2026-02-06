@@ -3,7 +3,7 @@
 const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
 
 let searchBooksByName = async (nombre) => {
-    
+
   try {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(nombre)}&key=${API_KEY}`);
     const data = await response.json();
@@ -16,6 +16,7 @@ let searchBooksByName = async (nombre) => {
           thumbnail = book.imageLinks.thumbnail;
         }
         return {
+          id: item.id,
           isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
           title: book.title || 'Título no disponible',
           author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
@@ -32,8 +33,8 @@ let searchBooksByName = async (nombre) => {
   }
 }
 let searchBooksByISBN = async (isbn) => {
-    console.log("Cargando libros...");
-    try {
+  console.log("Cargando libros...");
+  try {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&key=${API_KEY}`);
     const data = await response.json();
     if (data.items && data.items.length > 0) {
@@ -44,6 +45,7 @@ let searchBooksByISBN = async (isbn) => {
           thumbnail = book.imageLinks.thumbnail;
         }
         return {
+          id: item.id,
           isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
           title: book.title || 'Título no disponible',
           author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
@@ -58,7 +60,7 @@ let searchBooksByISBN = async (isbn) => {
     console.error(`Error al buscar libros por nombre ${nombre}:`, error);
     return [];
   }
-  
+
 }
 
 let searchBooksByAuthor = async (author) => {
@@ -74,6 +76,7 @@ let searchBooksByAuthor = async (author) => {
           thumbnail = book.imageLinks.thumbnail;
         }
         return {
+          id: item.id,
           isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
           title: book.title || 'Título no disponible',
           author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
@@ -95,12 +98,12 @@ let searchBooksByAuthor = async (author) => {
 let createBookCard = (bookData) => {
   const card = document.createElement('div');
   card.className = 'book-card';
-  
-  const description = bookData.description.length > 100 
-    ? bookData.description.substring(0, 100) + '...' 
+
+  const description = bookData.description.length > 100
+    ? bookData.description.substring(0, 100) + '...'
     : bookData.description;
 
-    // let newThumbnail = bookData.thumbnail.replace("&source","?fife=w400-h600&source");
+  // let newThumbnail = bookData.thumbnail.replace("&source","?fife=w400-h600&source");
 
   card.innerHTML = `
     <img src="${bookData.thumbnail}" alt="${bookData.title}" class="book-cover" onerror="this.src='../assets/imagenes/placeholder.png'">
@@ -111,11 +114,12 @@ let createBookCard = (bookData) => {
       <p class="book-isbn">ISBN: ${bookData.isbn}</p>
     </div>
   `;
-  
+
   card.addEventListener('click', () => {
-    window.open(`BookDetail.html?isbn=${bookData.isbn}`, '_blank');
+    window.open(`BookDetail.html?id=${bookData.id}`, '_blank');
+    console.log(bookData.id);
   });
-  
+
   return card;
 }
 
