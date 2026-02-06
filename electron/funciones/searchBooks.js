@@ -126,7 +126,7 @@ document.getElementById('searchNameInput').addEventListener('input', (event) => 
   clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(async () => {
     const query = event.target.value.trim();
-    const container = document.getElementById('booksNameContainer');
+    const container = document.getElementById('booksResultsContainer');
     container.innerHTML = '';
     if (query.length === 0) {
       return;
@@ -150,7 +150,7 @@ document.getElementById('searchAuthorInput').addEventListener('input', (event) =
   clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(async () => {
     const query = event.target.value.trim();
-    const container = document.getElementById('booksAuthorContainer');
+    const container = document.getElementById('booksResultsContainer');
     container.innerHTML = '';
     if (query.length === 0) {
       return;
@@ -169,12 +169,11 @@ document.getElementById('searchAuthorInput').addEventListener('input', (event) =
   }, 500); // 500 ms de espera tras dejar de escribir
 });
 
-el = document.getElementById('searchISBNInput')
-el.addEventListener('input', (event) => {
+document.getElementById('searchISBNInput').addEventListener('input', (event) => {
   clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(async () => {
     const query = event.target.value.trim();
-    const container = document.getElementById('booksISBNContainer');
+    const container = document.getElementById('booksResultsContainer');
     container.innerHTML = '';
     if (query.length === 0) {
       return;
