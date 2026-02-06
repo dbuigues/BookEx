@@ -1,26 +1,31 @@
 # ====== Stage 1: Build con Maven ======
-FROM maven:3.9.5-eclipse-temurin-17 AS build
+FROM maven:3.9.5-eclipse-temurin-21 AS build
 
 # Carpeta de trabajo dentro del contenedor
-WORKDIR /backend/ServidorRestLibros
+WORKDIR /app
 
-# Copiamos todo el proyecto (pom.xml + src)
-COPY . .
+# Copiamos primero el pom.xml para aprovechar la cache de Docker
+COPY pom.xml .
+
+# Descargamos las dependencias
+RUN mvn dependency:go-offline -B
+
+# Copiamos el resto del proyecto
+COPY src ./src
 
 # Compilamos la app
 RUN mvn clean package -DskipTests
 
 # ====== Stage 2: Imagen ligera para correr la app ======
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jre
 
-WORKDIR /ServidorRestLibros
+WORKDIR /app
 
 # Copiamos el jar desde el build
 COPY --from=build /app/target/*.jar app.jar
 
 # Puerto dinámico para Render
-ENV PORT=8080
 EXPOSE 8080
 
-# Arranque de la app
-CMD ["sh", "-c", "java -jar app.jar"]
+# Arranque de la app con puerto configurable desde variable de entorno
+CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar app.jar"]
