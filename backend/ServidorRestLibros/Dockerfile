@@ -2,7 +2,7 @@
 FROM maven:3.9.5-eclipse-temurin-17 AS build
 
 # Carpeta de trabajo dentro del contenedor
-WORKDIR /ServidorRestLibros
+WORKDIR /backend/ServidorRestLibros
 
 # Copiamos todo el proyecto (pom.xml + src)
 COPY . .
