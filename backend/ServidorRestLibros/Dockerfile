@@ -13,7 +13,7 @@ RUN mvn clean package -DskipTests
 # ====== Stage 2: Imagen ligera para correr la app ======
 FROM eclipse-temurin:17-jdk
 
-WORKDIR /app
+WORKDIR /ServidorRestLibros
 
 # Copiamos el jar desde el build
 COPY --from=build /app/target/*.jar app.jar
