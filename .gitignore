@@ -15,6 +15,5 @@
 local.properties
 **/node_modules/
 backend/ServidorRestLibros/.idea/inspectionProfiles/Project_Default.xml
-backend/ServidorRestLibros/src/main/resources/application.properties
 .idea/vcs.xml
 .idea/deploymentTargetSelector.xml
