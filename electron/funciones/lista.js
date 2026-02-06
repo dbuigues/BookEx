@@ -1,7 +1,8 @@
-const BotonCrearLista = document.getElementById('agregar-lista');
+const BotonAgregarLista = document.getElementById('agregar-lista');
 const BotoncerrarModal = document.getElementById('cerrar');
 const listasContainer = document.getElementById('listas-container');
 const modal = document.getElementById('modal');
+const BotonCrearLista = document.getElementById('crear-lista');
 let sesion;
 
 const verListas = async (sesion) => {
@@ -30,8 +31,6 @@ const verListas = async (sesion) => {
         div.textContent = lista.nombreLista;
         container.appendChild(div);
       });
-    } else {
-      container.innerHTML = '<p>No tienes listas creadas.</p>';
     }
   } catch (error) {
     console.error(`Error al buscar listas del usuario:`, error);
@@ -42,17 +41,45 @@ const verListas = async (sesion) => {
   }
 }
 
-const crearLista = async (nombreLista, sesion) => {}
+const crearLista = async (nombreDeLista, sesion) => {
+
+  try {
+    const idCall = await fetch(`http://localhost:8080/api/usuarios/correo/${encodeURIComponent(sesion)}`);
+    const userData = await idCall.json();
+    const id = userData.idUsuario;
+    console.log("Datos recibidos para crear lista:", id);
+
+    const lista = {
+      nombreLista: nombreDeLista, 
+      idUsuario: id
+    };
+    const response = await fetch('http://localhost:8080/api/listas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lista)
+    });
+    if (response.ok) {
+      console.log("Lista creada exitosamente");
+      modal.style.display = 'none';
+      verListas(sesion);
+    }
+  } catch (error) {
+    console.error('Error al crear la lista:', error);
+  }
+}
 
 
 if (sessionStorage.getItem('sesionActiva')!=null) {
   sesion = sessionStorage.getItem('sesionActiva');
-  BotonCrearLista.style.display = 'block';
+  BotonAgregarLista.style.display = 'block';
   verListas(sesion);
 }else{
-  BotonCrearLista.style.display = 'none';
+  BotonAgregarLista.style.display = 'none';
 }
 
-BotonCrearLista.addEventListener('click', () => { modal.style.display = 'block'; });
+BotonAgregarLista.addEventListener('click', () => { modal.style.display = 'block'; });
 BotoncerrarModal.addEventListener('click', () => { modal.style.display = 'none'; });
-
+BotonCrearLista.addEventListener('click', (event) => {
+  event.preventDefault();
+  crearLista(document.getElementById('nombre-lista').value, sesion);
+});
