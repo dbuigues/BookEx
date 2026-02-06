@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookEx</title>
     <link rel="stylesheet" href="../estilos/styles.css">
+    <style>
+        .search-row{display:flex;gap:16px;align-items:flex-end;margin-bottom:20px}
+        .search-column{flex:1;min-width:0}
+        .search-column label{display:block;margin-bottom:6px;font-weight:600}
+    </style>
 </head>
 <body>
     <!-- HEADER -->
@@ -27,20 +32,23 @@
     <!-- CONTENIDO PRINCIPAL -->
     <div class="container animate-slideDown">
 
-        <div class="section">
-            <h2 class="section-title">Buscar por nombre</h2>
-            <input type="text" id="searchNameInput" placeholder="Nombre del libro..." class="search-input">            
-            <div class="cards-grid" id="booksNameContainer"></div>
+        <div class="search-row">
+            <div class="search-column">
+                <label for="searchNameInput">Título</label>
+                <input type="text" id="searchNameInput" placeholder="Nombre del libro..." class="search-input">
+            </div>
+            <div class="search-column">
+                <label for="searchAuthorInput">Autor</label>
+                <input type="text" id="searchAuthorInput" placeholder="Nombre del autor..." class="search-input">
+            </div>
+            <div class="search-column">
+                <label for="searchISBNInput">ISBN</label>
+                <input type="text" id="searchISBNInput" placeholder="ISBN del libro..." class="search-input">
+            </div>
         </div>
         <div class="section">
-            <h2 class="section-title">Buscar por autor</h2>
-            <input type="text" id="searchAuthorInput" placeholder="Nombre del autor..." class="search-input">
-            <div class="cards-grid" id="booksAuthorContainer"></div>
-        </div>
-        <div class="section">
-            <h2 class="section-title">Buscar por isbn</h2>
-            <input type="text" id="searchISBNInput" placeholder="ISBN del libro..." class="search-input">            
-            <div class="cards-grid" id="booksISBNContainer"></div>
+            <h2 class="section-title">Resultados</h2>
+            <div class="cards-grid" id="booksResultsContainer"></div>
         </div>
     </div>
 
