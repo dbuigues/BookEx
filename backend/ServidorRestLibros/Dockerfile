@@ -4,13 +4,12 @@ FROM maven:3.9.5-eclipse-temurin-21 AS build
 # Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiamos primero el pom.xml para aprovechar la cache de Docker
-COPY pom.xml .
+# Copiamos pom.xml y mvnw para el build
+COPY pom.xml ./
+COPY mvnw.cmd ./
+COPY .mvn ./.mvn
 
-# Descargamos las dependencias
-RUN mvn dependency:go-offline -B
-
-# Copiamos el resto del proyecto
+# Copiamos el código fuente
 COPY src ./src
 
 # Compilamos la app
