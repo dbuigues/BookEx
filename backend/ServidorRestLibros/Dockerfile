@@ -4,13 +4,8 @@ FROM maven:3.9.5-eclipse-temurin-21 AS build
 # Carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiamos pom.xml y mvnw para el build
-COPY pom.xml ./
-COPY mvnw.cmd ./
-COPY .mvn ./.mvn
-
-# Copiamos el código fuente
-COPY src ./src
+# Copiamos todo el proyecto
+COPY . .
 
 # Compilamos la app
 RUN mvn clean package -DskipTests
