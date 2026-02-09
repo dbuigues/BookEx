@@ -8,6 +8,12 @@ function getQueryParam(param) {
     return urlParams.get(param);
 }
 
+function stripHtml(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+}
+
 async function fetchBookData(id) {
     try {
         console.log(id);
@@ -20,7 +26,7 @@ async function fetchBookData(id) {
                 author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
                 genre: book.categories ? book.categories.join(', ') : 'Género desconocido',
                 year: book.publishedDate || 'Año desconocido',
-                description: book.description || 'Descripción no disponible',
+                description: stripHtml(book.description) || 'Descripción no disponible',
                 cover: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png',
                 reviews: book.ratingsCount || 'Sin reseñas'
             };
