@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api/usuarios';
+const API_BASE_URL = 'https://bookex-u97b.onrender.com/api/usuarios';
 
 async function register(userToAdd) {
 

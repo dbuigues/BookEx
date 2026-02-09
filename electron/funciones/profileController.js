@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         userInfo.style.display = 'block';
         welcomeUser.innerText = `Bienvenido de nuevo, ${sessionStorage.getItem('sesionActiva')}!`;
 
-        userPFP.src = `http://localhost:8080/api/usuarios/getpfp/${sessionStorage.getItem('sesionActiva')}`;
+        userPFP.src = `https://bookex-u97b.onrender.com/api/usuarios/getpfp/${sessionStorage.getItem('sesionActiva')}`;
         userPFP.alt = `Foto de perfil de ${sessionStorage.getItem('sesionActiva')}`;
     }
 });

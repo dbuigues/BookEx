@@ -7,7 +7,7 @@ let sesion;
 
 const verListas = async (sesion) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/listas/usuario/bycorreo/${encodeURIComponent(sesion)}`);
+    const response = await fetch(`https://bookex-u97b.onrender.com/api/listas/usuario/bycorreo/${encodeURIComponent(sesion)}`);
     const data = await response.json();
     console.log("Datos recibidos:", data);
     console.log("Cargando listas...");
@@ -44,7 +44,7 @@ const verListas = async (sesion) => {
 const crearLista = async (nombreDeLista, sesion) => {
 
   try {
-    const idCall = await fetch(`http://localhost:8080/api/usuarios/correo/${encodeURIComponent(sesion)}`);
+    const idCall = await fetch(`https://bookex-u97b.onrender.com/api/usuarios/correo/${encodeURIComponent(sesion)}`);
     const userData = await idCall.json();
     const id = userData.idUsuario;
     console.log("Datos recibidos para crear lista:", id);
@@ -53,7 +53,7 @@ const crearLista = async (nombreDeLista, sesion) => {
       nombreLista: nombreDeLista, 
       idUsuario: id
     };
-    const response = await fetch('http://localhost:8080/api/listas', {
+    const response = await fetch('https://bookex-u97b.onrender.com/api/listas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(lista)
