@@ -49,9 +49,7 @@ public class UsuarioService {
         usuarioDTO.setContrasena(encrypt(usuarioDTO.getContrasena()));
         Usuario usuario = convertToEntity(usuarioDTO);
         Usuario savedUsuario = usuarioRepository.save(usuario);
-
-        //bookExSaluda.saludar(savedUsuario); // Enviar correo de bienvenida, desactivado porque en clase peta
-
+        bookExSaluda.saludar(savedUsuario); // Enviar correo de bienvenida, desactivado porque en clase peta
         return convertToDTO(savedUsuario);
     }
 
