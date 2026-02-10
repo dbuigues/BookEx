@@ -1,5 +1,39 @@
 const API_BASE_URL = 'https://bookex-u97b.onrender.com/api/usuarios';
 
+// Crear lista de favoritos para nuevo usuario
+async function crearListaFavoritos(correoUsuario) {
+	try {
+		console.log('Creando lista de favoritos para:', correoUsuario);
+		
+		// Obtener el ID del usuario por su correo
+		const idCall = await fetch(`https://bookex-u97b.onrender.com/api/usuarios/correo/${encodeURIComponent(correoUsuario)}`);
+		const userData = await idCall.json();
+		const id = userData.idUsuario;
+		
+		console.log("ID de usuario obtenido:", id);
+
+		// Crear la lista de favoritos
+		const lista = {
+			nombreLista: "Favoritos",
+			idUsuario: id
+		};
+		
+		const response = await fetch('https://bookex-u97b.onrender.com/api/listas', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(lista)
+		});
+		
+		if (response.ok) {
+			console.log("Lista de favoritos creada exitosamente");
+		} else {
+			console.error("Error al crear lista de favoritos");
+		}
+	} catch (error) {
+		console.error('Error al crear lista de favoritos:', error);
+	}
+}
+
 async function register(userToAdd) {
 
 	const errorDiv = document.getElementById('RegisterError');
@@ -36,6 +70,10 @@ async function register(userToAdd) {
 			if (response.ok) {
 				errorDiv.innerText = `Usuario creado con éxito.`;
 				console.log(data);
+				
+				// Crear lista de favoritos automáticamente
+				await crearListaFavoritos(userToAdd.correo);
+				
 				document.getElementById('regName').value = '';
 				document.getElementById('regEmail').value = '';
 				document.getElementById('regPassword').value = '';

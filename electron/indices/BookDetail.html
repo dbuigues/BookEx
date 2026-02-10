@@ -37,11 +37,29 @@
                     <p id="bookDescription"></p>
                 </div>
             </div>
+        
+        <div class="button-holder">
+        <button id="reviewButton" class="btn">Reseñar <img src="../assets/imagenes/write-50.png"></button>
+        <button id="saveButton" class="btn">Guardar <img src="../assets/imagenes/bookmark-24.png"></button>
+        </div>
         </div>
     </div>
     <footer>
         <p>&copy; 2026 BookEx. Plataforma de reseñas y opiniones de libros.</p>
     </footer>
+
+    <!-- Modal para seleccionar lista -->
+    <div id="listasModal" class="modal-overlay">
+        <div class="modal-content-lista">
+            <div class="modal-header">
+                <h2>Selecciona una lista</h2>
+                <button id="cerrarModalListas" class="close-btn">&times;</button>
+            </div>
+            <div id="listasSeleccion" class="listas-seleccion"></div>
+        </div>
+    </div>
+
     <script src="../funciones/bookDetail.js"></script>
+    <script src="../funciones/libro-lista.js"></script>
 </body>
 </html>
