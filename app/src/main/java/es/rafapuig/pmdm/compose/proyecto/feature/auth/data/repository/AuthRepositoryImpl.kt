@@ -4,19 +4,29 @@ import es.rafapuig.pmdm.compose.proyecto.feature.auth.domain.repository.AuthRepo
 
 class AuthRepositoryImpl : AuthRepository {
 
+    private var userLoggedIn = false
+
     override suspend fun login(email: String, password: String): Boolean {
-        return email == "test@test.com " && password == "12345"
+        if (email == "test@test.com" && password == "12345") {
+            userLoggedIn = true
+            return true
+        }
+        return false
     }
 
-    override suspend fun register(email: String, password: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun register(username: String, email: String, password: String): Boolean {
+        //Here you would typically add logic to register the user in your backend or database
+        //For this example, we'll just simulate a successful registration
+        userLoggedIn = true
+        return true
     }
 
     override suspend fun logout(): Boolean {
-        TODO("Not yet implemented")
+        userLoggedIn = false
+        return true
     }
 
     override suspend fun isUserLoggedIn(): Boolean {
-        TODO("Not yet implemented")
+        return userLoggedIn
     }
 }

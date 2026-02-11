@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Proyecto</string>
+    <string name="app_name">BookEx</string>
     <string name="please_fill_in_all_fields">Please fill in all fields.</string>
     <string name="invalid_email_or_password">Invalid email or password.</string>
     <string name="user_already_exists">User already exists.</string>

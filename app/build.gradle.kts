@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -45,6 +46,7 @@ kotlin {
 }
 
 dependencies {
+    implementation("androidx.navigation:navigation-compose:2.9.7")
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
