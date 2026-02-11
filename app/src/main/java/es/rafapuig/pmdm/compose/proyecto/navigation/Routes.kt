@@ -1,13 +1,7 @@
 package es.rafapuig.pmdm.compose.proyecto.navigation
 
-import androidx.navigation3.runtime.NavKey
-import kotlinx.serialization.Serializable
-
-@Serializable
-object HomeKey : NavKey
-
-@Serializable
-object LoginKey : NavKey
-
-@Serializable
-object RegisterKey : NavKey
+object Routes {
+    const val LOGIN_SCREEN = "login_screen"
+    const val REGISTER_SCREEN = "register_screen"
+    const val HOME_SCREEN = "home_screen"
+}
