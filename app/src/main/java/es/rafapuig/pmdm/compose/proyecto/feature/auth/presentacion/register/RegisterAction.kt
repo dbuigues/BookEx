@@ -7,6 +7,7 @@ sealed interface RegisterAction {
         val username: String,
         val email: String,
         val password: String,
+        val confirmPassword: String,
         ) : RegisterAction
     object OnNavigateToLogin : RegisterAction
 

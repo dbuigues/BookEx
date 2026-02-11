@@ -20,12 +20,11 @@ fun RegisterRoute(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val context = LocalContext.current
-
-    LaunchedEffect(viewModel.events, context) {
+    LaunchedEffect(key1 = viewModel.events) {
         viewModel.events.collect { event ->
             when (event) {
                 is RegisterUiEvent.RegisterSuccess -> {
+                    snackbarHostState.showSnackbar("Usuario registrado con éxito")
                     onRegisterSuccess()
                 }
                 is RegisterUiEvent.NavigateToLogin -> {
@@ -33,7 +32,7 @@ fun RegisterRoute(
                 }
                 is RegisterUiEvent.ShowErrorMessage -> {
                     snackbarHostState.showSnackbar(
-                        "",//context.getString(event.error.mapToMessage())
+                        "Error en el registro"
                     )
                 }
             }

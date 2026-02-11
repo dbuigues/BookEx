@@ -44,7 +44,8 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
                 loginUseCase.execute(email, password)
             }.onSuccess { success ->
                 if (success) {
-                    notifyEvent(LoginUiEvent.LoginSuccess)
+                    val username = email.substringBefore('@')
+                    notifyEvent(LoginUiEvent.LoginSuccess(username))
                 } else {
                     notifyEvent(LoginUiEvent.ShowErrorMessage("Invalid credentials"))
                 }

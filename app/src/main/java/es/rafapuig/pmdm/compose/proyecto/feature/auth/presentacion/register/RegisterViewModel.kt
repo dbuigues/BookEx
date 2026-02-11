@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlin.onSuccess
 
 class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -26,7 +27,7 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
     fun onAction(action: RegisterAction) {
         when (action) {
             is RegisterAction.OnRegister -> {
-                onRegister(action.username, action.email, action.password)
+                onRegister(action.username, action.email, action.password, action.confirmPassword)
             }
             RegisterAction.OnNavigateToLogin -> {
                 onNavigateToLogin()
@@ -37,8 +38,13 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
     }
 
 
-    private fun onRegister(username: String, email: String, password: String) {
+    private fun onRegister(username: String, email: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
+
+            if (password != confirmPassword) {
+                notifyEvent(RegisterUiEvent.ShowErrorMessage("Las contraseñas no coinciden"))
+                return@launch
+            }
 
             runCatching {
                 registerUseCase.execute(username, email, password)
@@ -50,7 +56,6 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
                 }
             }.onFailure { error ->
                 notifyEvent(RegisterUiEvent.ShowErrorMessage(error.message ?: "An unexpected error occurred"))
-                return@launch
             }
         }
     }

@@ -172,7 +172,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { onAction(RegisterAction.OnRegister(username, email, password)) },
+                onClick = { onAction(RegisterAction.OnRegister(username, email, password, confirmPassword)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
