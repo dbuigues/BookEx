@@ -25,7 +25,7 @@ async function getBookData(isbn) {
         title: book.title || 'Título no disponible',
         author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
         description: book.description || 'Descripción no disponible',
-        thumbnail: book.imageLinks?.thumbnail || '../imagenes/placeholder.png',
+        thumbnail: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png',
         link: book.previewLink || '#'
       };
     }
@@ -48,7 +48,7 @@ function createBookCard(bookData) {
   // let newThumbnail = bookData.thumbnail.replace("&source","?fife=w400-h600&source");
 
   card.innerHTML = `
-    <img src="${bookData.thumbnail}" alt="${bookData.title}" class="book-cover" onerror="this.src='../imagenes/placeholder.png'">
+    <img src="${bookData.thumbnail}" alt="${bookData.title}" class="book-cover" onerror="this.src='../assets/imagenes/logo.png'">
     <div class="book-info">
       <h3 class="book-title">${bookData.title}</h3>
       <p class="book-author">por ${bookData.author}</p>

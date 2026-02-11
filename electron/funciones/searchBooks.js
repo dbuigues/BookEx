@@ -106,7 +106,7 @@ let createBookCard = (bookData) => {
   // let newThumbnail = bookData.thumbnail.replace("&source","?fife=w400-h600&source");
 
   card.innerHTML = `
-    <img src="${bookData.thumbnail}" alt="${bookData.title}" class="book-cover" onerror="this.src='../assets/imagenes/placeholder.png'">
+    <img src="${bookData.thumbnail}" alt="${bookData.title}" class="book-cover" onerror="this.src='../assets/imagenes/logo.png'">
     <div class="book-info">
       <h3 class="book-title">${bookData.title}</h3>
       <p class="book-author">por ${bookData.author}</p>
