@@ -134,7 +134,7 @@ let createBookCard = (bookData) => {
   `;
 
   card.addEventListener('click', () => {
-    window.open(`BookDetail.html?id=${bookData.id}`, '_blank');
+    window.location.href = `BookDetail.html?id=${bookData.id}`;
     console.log(bookData.id);
   });
 
