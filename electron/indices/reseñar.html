@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle del Libro | BookEx</title>
     <link rel="stylesheet" href="../estilos/styles.css">
+    <!--PASAR STYLE DE ABAJO A ARCHIVO APARTE-->
+    <style>
+        #bookAuthor {
+            padding-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -23,10 +29,8 @@
         </div>
     </header>
     <main>
+    <h1 style="grid-column: 1 / span 2; margin: 20px auto">Escribe tu reseña</h1>
     <div class="container animate-slideDown">
-        <div class="page-title">
-
-        </div>
         <div class="section">
             <div class="book-detail">
                 <h2 id="bookTitle">Título del libro</h2>
@@ -39,9 +43,8 @@
         </div>
     </div>
 
-    <div>
+    <div style="height: 0; min-height: 100%;">
         <div class="book-detail">
-        <h2>Escribe tu reseña</h2>
         <div class="rating-container">
             <label>Puntuación:</label>
             <div class="star-rating">
