@@ -1,5 +1,6 @@
 package es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.register
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.rafapuig.pmdm.compose.proyecto.domain.usecase.RegisterUseCase
@@ -7,8 +8,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.onSuccess
 
 class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterState())
@@ -32,9 +33,24 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
             RegisterIntent.OnNavigateToLogin -> {
                 onNavigateToLogin()
             }
-
-            else -> {}
+            is RegisterIntent.OnImageSelected -> {
+                onImageSelected(action.uri)
+            }
+            RegisterIntent.OnUnselectImage -> {
+                onUnselectImage()
+            }
+            RegisterIntent.OnSelectImage -> {
+                // Este intent se maneja en la UI para abrir el picker
+            }
         }
+    }
+
+    private fun onImageSelected(uri: Uri) {
+        _uiState.update { it.copy(profileImageUri = uri) }
+    }
+
+    private fun onUnselectImage() {
+        _uiState.update { it.copy(profileImageUri = null) }
     }
 
 
