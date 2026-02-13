@@ -18,3 +18,5 @@ backend/ServidorRestLibros/.idea/inspectionProfiles/Project_Default.xml
 .idea/vcs.xml
 .idea/deploymentTargetSelector.xml
 .idea/misc.xml
+.idea/copilot.data.migration.agent.xml
+.idea/copilot.data.migration.edit.xml
