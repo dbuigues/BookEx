@@ -22,44 +22,50 @@
             </nav>
         </div>
     </header>
+    <main>
     <div class="container animate-slideDown">
         <div class="page-title">
-            <h1 id="bookTitle">Título del libro</h1>
-            <p id="bookAuthor">Autor</p>
+
         </div>
         <div class="section">
             <div class="book-detail">
+                <h2 id="bookTitle">Título del libro</h2>
+                <p id="bookAuthor">Autor</p>
                 <img id="bookCover" src="../assets/imagenes/logo.png" alt="Portada del libro" class="book-cover">
                 <div class="book-info">
                     <p><strong>Género:</strong> <span id="bookGenre"></span></p>
-                    <p><strong>Publicado:</strong> <span id="bookYear"></span></p>
-                    <p><strong>Descripción:</strong></p>
-                    <p id="bookDescription"></p>
                 </div>
             </div>
-        
-        <div class="button-holder">
-        <button id="reviewButton" class="btn">Reseñar <img src="../assets/imagenes/write-50.png"></button>
-        <button id="saveButton" class="btn">Guardar <img src="../assets/imagenes/bookmark-24.png"></button>
-        </div>
         </div>
     </div>
+
+    <div>
+        <div class="book-detail">
+        <h2>Escribe tu reseña</h2>
+        <div class="rating-container">
+            <label>Puntuación:</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" />
+                <label for="star5" title="5 estrellas">★</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="4 estrellas">★</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="3 estrellas">★</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="2 estrellas">★</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="1 estrella">★</label>
+            </div>
+        </div>
+        
+        <textarea id="reviewText" rows="10" maxlength="2000" placeholder="Escribe tu reseña aquí..."></textarea>
+        <button id="submitReview" class="btn">Enviar reseña</button>
+        </div>
+    </div>
+    </main>
     <footer>
         <p>&copy; 2026 BookEx. Plataforma de reseñas y opiniones de libros.</p>
     </footer>
-
-    <div id="listasModal" class="modal-overlay">
-        <div class="modal-content-lista">
-            <div class="modal-header">
-                <h2>Selecciona una lista</h2>
-                <button id="cerrarModalListas" class="close-btn">&times;</button>
-            </div>
-            <div id="listasSeleccion" class="listas-seleccion"></div>
-        </div>
-    </div>
-
-    <script src="../funciones/imageCache.js"></script>
-    <script src="../funciones/bookDetail.js"></script>
     <script src="../funciones/libro-lista.js"></script>
 </body>
 </html>

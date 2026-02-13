@@ -2,11 +2,18 @@
 // Funcionalidad para guardar libros en listas del usuario
 
 const API_BASE_URL = 'https://bookex-u97b.onrender.com/api';
+const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
 
 // Obtener el ID del libro de Google Books desde la URL
 function getBookId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('id');
+}
+
+// Obtener el ID de la lista desde la URL
+function getListaId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('idLista');
 }
 
 // Obtener la sesión activa del usuario
@@ -29,19 +36,19 @@ async function obtenerListasUsuario(correo) {
     }
 }
 
-// Verificar si el libro ya está en la lista
-async function libroYaEnLista(idLista, bookId) {
+// Verificar si el libro ya está en la lista y devolver el libro encontrado
+async function buscarLibroEnLista(idLista, bookId) {
     try {
         const response = await fetch(`${API_BASE_URL}/libros-listas/lista/${idLista}`);
         if (!response.ok) {
-            return false;
+            return null;
         }
         const libros = await response.json();
         const librosArray = Array.isArray(libros) ? libros : [];
-        return librosArray.some(libro => libro.googleBookId === bookId);
+        return librosArray.find(libro => libro.googleBookId === bookId) || null;
     } catch (error) {
         console.error('Error al verificar libro en lista:', error);
-        return false;
+        return null;
     }
 }
 
@@ -49,8 +56,8 @@ async function libroYaEnLista(idLista, bookId) {
 async function agregarLibroALista(idLista, bookId) {
     try {
         // Verificar si el libro ya está en la lista
-        const yaExiste = await libroYaEnLista(idLista, bookId);
-        if (yaExiste) {
+        const libroExistente = await buscarLibroEnLista(idLista, bookId);
+        if (libroExistente) {
             alert('Este libro ya está en la lista seleccionada');
             return false;
         }
@@ -126,16 +133,157 @@ async function mostrarModalListas() {
     modal.style.display = 'flex';
 }
 
+
+
+async function fetchBookData(id) {
+    try {
+        console.log(id);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}?key=${API_KEY}`);
+        const data = await response.json();
+        if (data && data.volumeInfo) {
+            const book = data.volumeInfo;
+            return {
+                title: book.title || 'Título no disponible',
+                author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
+                genre: book.categories ? book.categories.join(', ') : 'Género desconocido',
+                cover: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png',
+                reviews: book.ratingsCount || 'Sin reseñas'
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error('Error al obtener datos del libro:', error);
+        return null;
+    }
+}
+
+async function loadBookDetail() {
+    const id = getBookId();
+    if (!id) {
+        document.getElementById('bookTitle').textContent = 'Libro no encontrado';
+        return;
+    }
+    const book = await fetchBookData(id);
+    if (!book) {
+        document.getElementById('bookTitle').textContent = 'No se encontraron datos para este libro';
+        return;
+    }
+    document.getElementById('bookTitle').textContent = book.title;
+    document.getElementById('bookAuthor').textContent = book.author;
+    document.getElementById('bookGenre').textContent = book.genre;
+    document.getElementById('bookCover').src = book.cover;
+}
+
 // Cerrar modal
 function cerrarModal() {
     const modal = document.getElementById('listasModal');
     modal.style.display = 'none';
 }
 
+// Obtener la lista "Reviews" del usuario
+async function obtenerListaReviews(correo) {
+    const listas = await obtenerListasUsuario(correo);
+    return listas.find(lista => lista.nombreLista === 'Reviews') || null;
+}
+
+// Guardar reseña desde el formulario
+async function guardarResena() {
+    const sesion = getSesionActiva();
+    if (!sesion) {
+        alert('Debes iniciar sesión para escribir una reseña');
+        return;
+    }
+
+    const bookId = getBookId();
+    if (!bookId) {
+        alert('No se encontró el libro.');
+        return;
+    }
+
+    // Obtener los valores del formulario
+    const ratingElements = document.getElementsByName('rating');
+    let puntuacion = null;
+    for (const radio of ratingElements) {
+        if (radio.checked) {
+            puntuacion = parseInt(radio.value);
+            break;
+        }
+    }
+
+    const reviewText = document.getElementById('reviewText').value.trim();
+
+    if (!puntuacion) {
+        alert('Por favor, selecciona una puntuación con las estrellas');
+        return;
+    }
+
+    if (!reviewText) {
+        alert('Por favor, escribe tu reseña');
+        return;
+    }
+
+    // Buscar la lista "Reviews" del usuario
+    const listaReviews = await obtenerListaReviews(sesion);
+    if (!listaReviews) {
+        alert('No se encontró tu lista de Reviews. Contacta con soporte.');
+        return;
+    }
+
+    const idLista = listaReviews.idLista;
+    // Una sola llamada para buscar si el libro existe y obtenerlo
+    const libroExistente = await buscarLibroEnLista(idLista, bookId);
+
+    if (!libroExistente) {
+        // Crear la entrada del libro en la lista Reviews con la reseña
+        const libroLista = {
+            idLista: idLista,
+            googleBookId: bookId,
+            resena: reviewText,
+            puntuacion: puntuacion,
+            fechaPublicacion: new Date().toISOString().split('T')[0]
+        };
+
+        const response = await fetch(`${API_BASE_URL}/libros-listas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(libroLista)
+        });
+
+        if (response.ok) {
+            alert('¡Reseña guardada exitosamente!');
+        } else {
+            alert('Error al guardar la reseña. Intenta nuevamente.');
+        }
+    } else {
+        // El libro ya existe en Reviews, actualizar directamente (reutilizar objeto)
+        libroExistente.resena = reviewText;
+        libroExistente.puntuacion = puntuacion;
+        libroExistente.fechaPublicacion = new Date().toISOString().split('T')[0];
+
+        const updateResponse = await fetch(`${API_BASE_URL}/libros-listas/${libroExistente.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(libroExistente)
+        });
+
+        if (updateResponse.ok) {
+            alert('¡Reseña actualizada exitosamente!');
+        } else {
+            alert('Error al actualizar la reseña. Intenta nuevamente.');
+        }
+    }
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+    loadBookDetail();
     const saveButton = document.getElementById('saveButton');
     const closeModalBtn = document.getElementById('cerrarModalListas');
+    const submitReviewBtn = document.getElementById('submitReview');
+
+    if (submitReviewBtn) {
+        submitReviewBtn.addEventListener('click', guardarResena);
+    }
 
     if (saveButton) {
         saveButton.addEventListener('click', mostrarModalListas);

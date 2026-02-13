@@ -40,6 +40,12 @@ async function fetchBookData(id) {
     }
 }
 
+document.getElementById('reviewButton').addEventListener('click', () => {
+    const bookId = getQueryParam('id');
+    window.location.href = `reseñar.html?id=${bookId}`;
+});
+
+
 async function loadBookDetail() {
     const id = getQueryParam('id');
     if (!id) {
