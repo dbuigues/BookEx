@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">BookEx</string>
     <string name="please_fill_in_all_fields">Please fill in all fields.</string>
+    <string name="invalid_email">Invalid email address.</string>
+    <string name="weak_password">Password must be at least 6 characters.</string>
     <string name="invalid_email_or_password">Invalid email or password.</string>
     <string name="user_already_exists">User already exists.</string>
     <string name="network_error_please_try_again">Network error. Please try again.</string>

@@ -7,6 +7,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
@@ -22,43 +23,36 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
         }
     }
 
-
     fun onAction(action: LoginIntent) {
         when (action) {
             is LoginIntent.OnLogin -> {
-                // Handle login action
                 onLogin(action.email, action.password)
             }
             LoginIntent.OnNavigateToRegister -> {
-                // Handle navigation to register action
-                onNavigateToRegister()
+                notifyEvent(LoginEvent.NavigateToRegister)
             }
         }
     }
 
-
-    private fun onLogin(email: String, password:String) {
+    private fun onLogin(email: String, password: String) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            runCatching {
-                loginUseCase.execute(email, password)
-            }.onSuccess { success ->
-                if (success) {
-                    val username = email.substringBefore('@')
-                    notifyEvent(LoginEvent.LoginSuccess(username))
-                } else {
-                    notifyEvent(LoginEvent.ShowErrorMessage("Invalid credentials"))
+            loginUseCase.execute(email, password)
+                .onSuccess { user ->
+                    _uiState.update { it.copy(isLoading = false) }
+                    notifyEvent(LoginEvent.LoginSuccess(user.username))
                 }
-            }.onFailure { error ->
-                notifyEvent(LoginEvent.ShowErrorMessage(error.message ?: "An unexpected error occurred"))
-                return@launch
-            }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = error.message ?: "Error al iniciar sesión"
+                        )
+                    }
+                    notifyEvent(LoginEvent.ShowErrorMessage(error.message ?: "Error al iniciar sesión"))
+                }
         }
-    }
-
-    private fun onNavigateToRegister() {
-        // Handle navigation to register screen
-        notifyEvent(LoginEvent.NavigateToRegister)
     }
 
 }

@@ -8,9 +8,7 @@ plugins {
 
 android {
     namespace = "es.rafapuig.pmdm.compose.proyecto"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "es.rafapuig.pmdm.compose.proyecto"

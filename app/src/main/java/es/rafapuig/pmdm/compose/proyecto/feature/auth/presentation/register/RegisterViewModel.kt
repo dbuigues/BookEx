@@ -24,20 +24,19 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
         }
     }
 
-
     fun onAction(action: RegisterIntent) {
         when (action) {
             is RegisterIntent.OnRegister -> {
                 onRegister(action.username, action.email, action.password, action.confirmPassword)
             }
             RegisterIntent.OnNavigateToLogin -> {
-                onNavigateToLogin()
+                notifyEvent(RegisterEvent.NavigateToLogin)
             }
             is RegisterIntent.OnImageSelected -> {
-                onImageSelected(action.uri)
+                _uiState.update { it.copy(profileImageUri = action.uri) }
             }
             RegisterIntent.OnUnselectImage -> {
-                onUnselectImage()
+                _uiState.update { it.copy(profileImageUri = null) }
             }
             RegisterIntent.OnSelectImage -> {
                 // Este intent se maneja en la UI para abrir el picker
@@ -45,39 +44,31 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
         }
     }
 
-    private fun onImageSelected(uri: Uri) {
-        _uiState.update { it.copy(profileImageUri = uri) }
-    }
-
-    private fun onUnselectImage() {
-        _uiState.update { it.copy(profileImageUri = null) }
-    }
-
-
     private fun onRegister(username: String, email: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
-
             if (password != confirmPassword) {
+                _uiState.update { it.copy(errorMessage = "Las contraseñas no coinciden") }
                 notifyEvent(RegisterEvent.ShowErrorMessage("Las contraseñas no coinciden"))
                 return@launch
             }
 
-            runCatching {
-                registerUseCase.execute(username, email, password)
-            }.onSuccess { success ->
-                if (success) {
-                    notifyEvent(RegisterEvent.RegisterSuccess)
-                } else {
-                    notifyEvent(RegisterEvent.ShowErrorMessage("Registration failed"))
-                }
-            }.onFailure { error ->
-                notifyEvent(RegisterEvent.ShowErrorMessage(error.message ?: "An unexpected error occurred"))
-            }
-        }
-    }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-    private fun onNavigateToLogin() {
-        notifyEvent(RegisterEvent.NavigateToLogin)
+            registerUseCase.execute(username, email, password)
+                .onSuccess { user ->
+                    _uiState.update { it.copy(isLoading = false) }
+                    notifyEvent(RegisterEvent.RegisterSuccess)
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = error.message ?: "Error al registrarse"
+                        )
+                    }
+                    notifyEvent(RegisterEvent.ShowErrorMessage(error.message ?: "Error al registrarse"))
+                }
+        }
     }
 
 }

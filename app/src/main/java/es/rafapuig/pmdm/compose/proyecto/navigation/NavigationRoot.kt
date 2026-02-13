@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.login.LoginRoute
 import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.register.RegisterRoute
 import es.rafapuig.pmdm.compose.proyecto.feature.home.presentacion.HomeScreen
+import es.rafapuig.pmdm.compose.proyecto.feature.profile.presentation.ProfileRoute
 
 @Composable
 fun NavigationRoot() {
@@ -44,7 +45,21 @@ fun NavigationRoot() {
             arguments = listOf(navArgument("username") { type = NavType.StringType })
         ) {
             val username = it.arguments?.getString("username") ?: ""
-            HomeScreen(username = username)
+            HomeScreen(
+                username = username,
+                onNavigateToProfile = {
+                    navController.navigate(Routes.PROFILE_SCREEN)
+                }
+            )
+        }
+        composable(Routes.PROFILE_SCREEN) {
+            ProfileRoute(
+                onLogout = {
+                    navController.navigate(Routes.LOGIN_SCREEN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }
