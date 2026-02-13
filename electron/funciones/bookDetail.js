@@ -28,7 +28,8 @@ async function fetchBookData(id) {
                 genre: book.categories ? book.categories.join(', ') : 'Género desconocido',
                 year: book.publishedDate || 'Año desconocido',
                 description: stripHtml(book.description) || 'Descripción no disponible',
-                cover: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png',
+                    // Use cached image if available; otherwise use original URL for browser to load
+                    cover: (book.imageLinks && book.imageLinks.thumbnail) ? (window.getCachedImageIfAvailable ? await window.getCachedImageIfAvailable(book.imageLinks.thumbnail) : book.imageLinks.thumbnail) : '../assets/imagenes/logo.png',
                 reviews: book.ratingsCount || 'Sin reseñas'
             };
         }

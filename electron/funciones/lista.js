@@ -28,10 +28,18 @@ const obtenerInfoLibro = async (googleBookId) => {
     const data = await response.json();
     if (data && data.volumeInfo) {
       const book = data.volumeInfo;
+      let thumbnail = '../assets/imagenes/logo.png';
+      if (book.imageLinks && book.imageLinks.thumbnail) {
+        if (window.getCachedImageIfAvailable) {
+          thumbnail = await window.getCachedImageIfAvailable(book.imageLinks.thumbnail);
+        } else {
+          thumbnail = book.imageLinks.thumbnail;
+        }
+      }
       return {
         title: book.title || 'Título no disponible',
         author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
-        thumbnail: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png'
+        thumbnail: thumbnail
       };
     }
     return null;

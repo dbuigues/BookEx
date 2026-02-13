@@ -9,22 +9,28 @@ let searchBooksByName = async (nombre) => {
     const data = await response.json();
     console.log("Cargando libros...");
     if (data.items && data.items.length > 0) {
-      return data.items.map(item => {
-        const book = item.volumeInfo;
-        let thumbnail = '../assets/imagenes/logo.png';
-        if (book.imageLinks && book.imageLinks.thumbnail) {
-          thumbnail = book.imageLinks.thumbnail;
+        const results = [];
+        for (const item of data.items) {
+          const book = item.volumeInfo;
+          let thumbnail = '../assets/imagenes/logo.png';
+          if (book.imageLinks && book.imageLinks.thumbnail) {
+            if (window.getCachedImageIfAvailable) {
+              thumbnail = await window.getCachedImageIfAvailable(book.imageLinks.thumbnail);
+            } else {
+              thumbnail = book.imageLinks.thumbnail;
+            }
+          }
+          results.push({
+            id: item.id,
+            isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
+            title: book.title || 'Título no disponible',
+            author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
+            description: book.description || 'Descripción no disponible',
+            thumbnail: thumbnail,
+            link: book.previewLink || '#'
+          });
         }
-        return {
-          id: item.id,
-          isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
-          title: book.title || 'Título no disponible',
-          author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
-          description: book.description || 'Descripción no disponible',
-          thumbnail: thumbnail,
-          link: book.previewLink || '#'
-        };
-      });
+        return results;
     }
     return [];
   } catch (error) {
@@ -38,22 +44,28 @@ let searchBooksByISBN = async (isbn) => {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&key=${API_KEY}`);
     const data = await response.json();
     if (data.items && data.items.length > 0) {
-      return data.items.map(item => {
-        const book = item.volumeInfo;
-        let thumbnail = '../assets/imagenes/logo.png';
-        if (book.imageLinks && book.imageLinks.thumbnail) {
-          thumbnail = book.imageLinks.thumbnail;
+        const results = [];
+        for (const item of data.items) {
+          const book = item.volumeInfo;
+          let thumbnail = '../assets/imagenes/logo.png';
+          if (book.imageLinks && book.imageLinks.thumbnail) {
+            if (window.getCachedImageIfAvailable) {
+              thumbnail = await window.getCachedImageIfAvailable(book.imageLinks.thumbnail);
+            } else {
+              thumbnail = book.imageLinks.thumbnail;
+            }
+          }
+          results.push({
+            id: item.id,
+            isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
+            title: book.title || 'Título no disponible',
+            author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
+            description: book.description || 'Descripción no disponible',
+            thumbnail: thumbnail,
+            link: book.previewLink || '#'
+          });
         }
-        return {
-          id: item.id,
-          isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
-          title: book.title || 'Título no disponible',
-          author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
-          description: book.description || 'Descripción no disponible',
-          thumbnail: thumbnail,
-          link: book.previewLink || '#'
-        };
-      });
+        return results;
     }
     return [];
   } catch (error) {
@@ -69,22 +81,28 @@ let searchBooksByAuthor = async (author) => {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${encodeURIComponent(author)}&key=${API_KEY}`);
     const data = await response.json();
     if (data.items && data.items.length > 0) {
-      return data.items.map(item => {
-        const book = item.volumeInfo;
-        let thumbnail = '../assets/imagenes/logo.png';
-        if (book.imageLinks && book.imageLinks.thumbnail) {
-          thumbnail = book.imageLinks.thumbnail;
+        const results = [];
+        for (const item of data.items) {
+          const book = item.volumeInfo;
+          let thumbnail = '../assets/imagenes/logo.png';
+          if (book.imageLinks && book.imageLinks.thumbnail) {
+            if (window.getCachedImageIfAvailable) {
+              thumbnail = await window.getCachedImageIfAvailable(book.imageLinks.thumbnail);
+            } else {
+              thumbnail = book.imageLinks.thumbnail;
+            }
+          }
+          results.push({
+            id: item.id,
+            isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
+            title: book.title || 'Título no disponible',
+            author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
+            description: book.description || 'Descripción no disponible',
+            thumbnail: thumbnail,
+            link: book.previewLink || '#'
+          });
         }
-        return {
-          id: item.id,
-          isbn: book.industryIdentifiers ? book.industryIdentifiers[0].identifier : 'N/A',
-          title: book.title || 'Título no disponible',
-          author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
-          description: book.description || 'Descripción no disponible',
-          thumbnail: thumbnail,
-          link: book.previewLink || '#'
-        };
-      });
+        return results;
     }
     return [];
   } catch (error) {

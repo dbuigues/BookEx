@@ -19,13 +19,23 @@ async function getBookData(isbn) {
 
     if (data.items && data.items.length > 0) {
       const book = data.items[0].volumeInfo;
+      // Use cached image if available; otherwise use original URL for browser to load
+      let thumbnailUrl = '../assets/imagenes/logo.png';
+      if (book.imageLinks && book.imageLinks.thumbnail) {
+        if (window.getCachedImageIfAvailable) {
+          thumbnailUrl = await window.getCachedImageIfAvailable(book.imageLinks.thumbnail);
+        } else {
+          thumbnailUrl = book.imageLinks.thumbnail;
+        }
+      }
+
       return {
         id: data.items[0].id,
         isbn: isbn,
         title: book.title || 'Título no disponible',
         author: book.authors ? book.authors.join(', ') : 'Autor desconocido',
         description: book.description || 'Descripción no disponible',
-        thumbnail: book.imageLinks?.thumbnail || '../assets/imagenes/logo.png',
+        thumbnail: thumbnailUrl,
         link: book.previewLink || '#'
       };
     }
