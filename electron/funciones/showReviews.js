@@ -71,14 +71,22 @@ async function cargarResenasUsuario() {
                     <p class="review-author">${autor}</p>
                     <div class="review-rating">${estrellas}</div>
                     <p class="review-text">${libro.resena}</p>
-                    <p class="review-date">${fecha}</p>
+                    <div class="review-footer">
+                        <p class="review-date">${fecha}</p>
+                        <button class="btn-eliminar-resena">Eliminar reseña</button>
+                    </div>
                 </div>
             `;
 
-            card.style.cursor = 'pointer';
-            card.onclick = () => {
+            const btnEliminar = card.querySelector('.btn-eliminar-resena');
+            btnEliminar.addEventListener('click', (e) => {
+                e.stopPropagation();
+                eliminarResena(libro.id);
+            });
+
+            card.addEventListener('click', () => {
                 window.location.href = `BookDetail.html?id=${libro.googleBookId}`;
-            };
+            });
 
             container.appendChild(card);
         });
@@ -86,6 +94,45 @@ async function cargarResenasUsuario() {
     } catch (error) {
         console.error('Error al cargar reseñas:', error);
         container.innerHTML = '<p class="empty-message">Error al cargar las reseñas. Intenta de nuevo.</p>';
+    }
+}
+
+async function eliminarResena(idLibroLista) {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/libros-listas/${idLibroLista}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Error desconocido' }));
+            throw new Error(errorData.message || `Error ${response.status}`);
+        }
+
+        // Recargar las reseñas
+        cargarResenasUsuario();
+    } catch (error) {
+        console.error('Error al eliminar reseña:', error);
+        
+        // Mostrar dialog de error
+        const dialog = document.createElement('dialog');
+        dialog.className = 'alerta-centrada';
+        dialog.innerHTML = `
+            <div style="padding: 30px; text-align: center;">
+                <h2 style="color: #e74c3c; margin-bottom: 20px;">Error al eliminar</h2>
+                <p style="margin-bottom: 30px; color: #2c3e50;">${error.message || 'No se pudo eliminar la reseña. Intenta de nuevo.'}</p>
+                <button onclick="this.closest('dialog').close()" style="padding: 10px 30px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">Cerrar</button>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+        dialog.showModal();
+        
+        dialog.addEventListener('close', () => {
+            dialog.remove();
+        });
     }
 }
 
