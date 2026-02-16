@@ -21,8 +21,8 @@ fun NavigationRoot() {
                 onNavigateToRegister = {
                     navController.navigate(Routes.REGISTER_SCREEN)
                 },
-                onLoginSuccess = { username ->
-                    navController.navigate(Routes.homeScreen(username)) {
+                onLoginSuccess = { _ ->
+                    navController.navigate(Routes.PROFILE_SCREEN) {
                         popUpTo(Routes.LOGIN_SCREEN) { inclusive = true }
                     }
                 }

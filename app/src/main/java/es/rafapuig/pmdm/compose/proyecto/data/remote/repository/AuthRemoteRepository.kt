@@ -23,7 +23,40 @@ class AuthRemoteRepository(private val authApiService: AuthApiService) {
             correo = correo,
             contrasena = contrasena
         )
-        return safeApiCall { authApiService.login(usuario) }
+
+        return try {
+            // Intentar login
+            val response = authApiService.login(usuario)
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null && body.idUsuario != null && body.idUsuario != 0L) {
+                    // El backend devuelve UsuarioDTO completo
+                    ApiResponse.Success(body)
+                } else {
+                    // El backend puede haber devuelto solo el correo o datos incompletos
+                    // Obtener datos completos del usuario
+                    getUsuarioByCorreo(correo)
+                }
+            } else if (response.code() == 401) {
+                ApiResponse.Error("Credenciales incorrectas", 401)
+            } else {
+                ApiResponse.Error(
+                    message = response.errorBody()?.string() ?: "Error de autenticación",
+                    code = response.code()
+                )
+            }
+        } catch (e: Exception) {
+            // Si hay error de parsing (el backend devuelve String en lugar de UsuarioDTO)
+            // significa que el login fue exitoso pero con formato antiguo
+            if (e.message?.contains("Expected", ignoreCase = true) == true ||
+                e.message?.contains("BEGIN_OBJECT", ignoreCase = true) == true) {
+                // Login exitoso, obtener datos del usuario
+                getUsuarioByCorreo(correo)
+            } else {
+                ApiResponse.Error(e.message ?: "Error de red")
+            }
+        }
     }
 
     suspend fun getUsuarioById(id: Long): ApiResponse<UsuarioDto> {
