@@ -49,7 +49,18 @@ public class UsuarioService {
         usuarioDTO.setContrasena(encrypt(usuarioDTO.getContrasena()));
         Usuario usuario = convertToEntity(usuarioDTO);
         Usuario savedUsuario = usuarioRepository.save(usuario);
-        bookExSaluda.saludar(savedUsuario); // Enviar correo de bienvenida, desactivado porque en clase peta
+
+        // Enviar correo de bienvenida de forma asíncrona para no bloquear la respuesta
+        final Usuario usuarioParaEmail = savedUsuario;
+        new Thread(() -> {
+            try {
+                bookExSaluda.saludar(usuarioParaEmail);
+            } catch (Exception e) {
+                // Log error pero no bloquear el registro
+                System.err.println("Error al enviar correo de bienvenida: " + e.getMessage());
+            }
+        }).start();
+
         return convertToDTO(savedUsuario);
     }
 
