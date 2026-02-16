@@ -26,7 +26,7 @@ class BooksViewModel(
     private var searchJob: Job? = null
 
     companion object {
-        private const val DEBOUNCE_DELAY_MS = 500L
+        private const val DEBOUNCE_DELAY_MS = 1000L
     }
 
     fun onQueryChange(query: String) {
