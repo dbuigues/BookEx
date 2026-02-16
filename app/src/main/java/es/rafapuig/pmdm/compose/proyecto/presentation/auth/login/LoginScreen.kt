@@ -58,16 +58,7 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo BookEx",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .align(Alignment.TopStart),
-                contentScale = ContentScale.Crop
-            )
+
 
             Column(
                 modifier = Modifier
@@ -76,7 +67,16 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Título
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo BookEx",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(148.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+
                 Text(
                     text = "Iniciar Sesión",
                     fontSize = 28.sp,

@@ -7,7 +7,12 @@ import es.rafapuig.pmdm.compose.proyecto.domain.repository.AuthRepository
 
 class RegisterUseCase(private val repository: AuthRepository) {
 
-    suspend fun execute(username: String, email: String, password: String): Result<User> {
+    suspend fun execute(
+        username: String,
+        email: String,
+        password: String,
+        profileImageBase64: String? = null
+    ): Result<User> {
 
         if (username.isBlank() || email.isBlank() || password.isBlank()) {
             return Result.failure(AuthException(AuthError.EmptyFields))
@@ -21,6 +26,6 @@ class RegisterUseCase(private val repository: AuthRepository) {
             return Result.failure(AuthException(AuthError.WeakPassword))
         }
 
-        return repository.register(username, email, password)
+        return repository.register(username, email, password, profileImageBase64)
     }
 }

@@ -44,6 +44,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import es.rafapuig.pmdm.compose.proyecto.R
 import es.rafapuig.pmdm.compose.proyecto.ui.theme.ProyectoTheme
+import es.rafapuig.pmdm.compose.proyecto.util.uriToBase64
 
 @Composable
 fun RegisterScreen(
@@ -61,6 +62,7 @@ fun RegisterScreen(
     var showConfirmPassword by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     // Launcher para seleccionar imagen de galería
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -290,7 +292,20 @@ fun RegisterScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
-                    onClick = { onAction(RegisterIntent.OnRegister(username, email, password, confirmPassword)) },
+                    onClick = {
+                        val imageBase64 = state.profileImageUri?.let { uri ->
+                            uriToBase64(context, uri)
+                        }
+                        onAction(
+                            RegisterIntent.OnRegister(
+                                username = username,
+                                email = email,
+                                password = password,
+                                confirmPassword = confirmPassword,
+                                profileImageBase64 = imageBase64
+                            )
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),

@@ -26,7 +26,13 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
     fun onAction(action: RegisterIntent) {
         when (action) {
             is RegisterIntent.OnRegister -> {
-                onRegister(action.username, action.email, action.password, action.confirmPassword)
+                onRegister(
+                    action.username,
+                    action.email,
+                    action.password,
+                    action.confirmPassword,
+                    action.profileImageBase64
+                )
             }
             RegisterIntent.OnNavigateToLogin -> {
                 notifyEvent(RegisterEvent.NavigateToLogin)
@@ -43,7 +49,13 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
         }
     }
 
-    private fun onRegister(username: String, email: String, password: String, confirmPassword: String) {
+    private fun onRegister(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        profileImageBase64: String?
+    ) {
         viewModelScope.launch {
             if (password != confirmPassword) {
                 _uiState.update { it.copy(errorMessage = "Las contraseñas no coinciden") }
@@ -53,8 +65,8 @@ class RegisterViewModel(private val registerUseCase: RegisterUseCase) : ViewMode
 
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            registerUseCase.execute(username, email, password)
-                .onSuccess { user ->
+            registerUseCase.execute(username, email, password, profileImageBase64)
+                .onSuccess { _ ->
                     _uiState.update { it.copy(isLoading = false) }
                     notifyEvent(RegisterEvent.RegisterSuccess)
                 }

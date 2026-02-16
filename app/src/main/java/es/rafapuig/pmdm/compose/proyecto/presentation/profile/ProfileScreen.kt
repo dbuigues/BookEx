@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import es.rafapuig.pmdm.compose.proyecto.domain.model.User
+import es.rafapuig.pmdm.compose.proyecto.ui.components.Base64Image
 import es.rafapuig.pmdm.compose.proyecto.ui.theme.ProyectoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,9 +62,9 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(32.dp))
 
                     // Foto de perfil
-                    if (state.user.profileImage != null) {
-                        Image(
-                            painter = rememberAsyncImagePainter(state.user.profileImage),
+                    if (!state.user.profileImage.isNullOrBlank()) {
+                        Base64Image(
+                            base64String = state.user.profileImage,
                             contentDescription = "Foto de perfil",
                             modifier = Modifier
                                 .size(120.dp)

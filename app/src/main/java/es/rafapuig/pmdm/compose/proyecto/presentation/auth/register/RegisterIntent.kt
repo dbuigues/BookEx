@@ -8,7 +8,8 @@ sealed interface RegisterIntent {
         val email: String,
         val password: String,
         val confirmPassword: String,
-        ) : RegisterIntent
+        val profileImageBase64: String? = null
+    ) : RegisterIntent
     object OnNavigateToLogin : RegisterIntent
 
     object OnSelectImage : RegisterIntent

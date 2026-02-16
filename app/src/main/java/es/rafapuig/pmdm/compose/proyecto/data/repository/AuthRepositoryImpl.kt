@@ -38,8 +38,13 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun register(username: String, email: String, password: String): Result<User> {
-        return when (val response = authRemoteRepository.register(username, email, password)) {
+    override suspend fun register(
+        username: String,
+        email: String,
+        password: String,
+        profileImageBase64: String?
+    ): Result<User> {
+        return when (val response = authRemoteRepository.register(username, email, password, profileImageBase64)) {
             is ApiResponse.Success -> {
                 val usuarioDto = response.data
                 Result.success(
