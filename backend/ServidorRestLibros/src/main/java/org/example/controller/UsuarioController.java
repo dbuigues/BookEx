@@ -60,18 +60,18 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUsuario);
     }
     @PostMapping("/login")
-    public ResponseEntity<UsuarioDTO> loginUsuario(@RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
+    public Optional<ResponseEntity<?>> loginUsuario(@RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
         String encryptedPassword = usuarioService.encrypt(usuarioDTO.getContrasena());
         return usuarioService.findByCorreo(usuarioDTO.getCorreo())
                 .map(usuario -> {
                     if (usuario.getContrasena().equals(encryptedPassword)) {
-                        return ResponseEntity.ok(usuario);
+                        return ResponseEntity.ok(usuario.getCorreo());
                     } else {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).<UsuarioDTO>build();
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                     }
-                })
-                .orElse(ResponseEntity.notFound().build());
+                });
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) throws NoSuchAlgorithmException {
