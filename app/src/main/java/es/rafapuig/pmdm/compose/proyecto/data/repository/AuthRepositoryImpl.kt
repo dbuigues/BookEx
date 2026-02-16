@@ -47,6 +47,12 @@ class AuthRepositoryImpl(
         return when (val response = authRemoteRepository.register(username, email, password, profileImageBase64)) {
             is ApiResponse.Success -> {
                 val usuarioDto = response.data
+
+                // Guardar datos de sesión para que el usuario quede logueado
+                tokenManager.saveUserId(usuarioDto.idUsuario ?: 0L)
+                tokenManager.saveUsername(usuarioDto.nombre)
+                tokenManager.saveUserEmail(usuarioDto.correo)
+
                 Result.success(
                     User(
                         id = usuarioDto.idUsuario ?: 0L,

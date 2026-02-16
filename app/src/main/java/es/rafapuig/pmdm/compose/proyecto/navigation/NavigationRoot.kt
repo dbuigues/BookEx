@@ -30,8 +30,8 @@ fun NavigationRoot() {
                     navController.popBackStack()
                 },
                 onRegisterSuccess = {
-                    navController.navigate(Routes.LOGIN_SCREEN) {
-                        popUpTo(Routes.REGISTER_SCREEN) { inclusive = true }
+                    navController.navigate(Routes.MAIN_GRAPH) {
+                        popUpTo(Routes.LOGIN_SCREEN) { inclusive = true }
                     }
                 }
             )
