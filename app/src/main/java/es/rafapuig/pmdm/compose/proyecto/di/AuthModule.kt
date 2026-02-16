@@ -2,10 +2,10 @@ package es.rafapuig.pmdm.compose.proyecto.di
 
 import es.rafapuig.pmdm.compose.proyecto.data.repository.AuthRepositoryImpl
 import es.rafapuig.pmdm.compose.proyecto.domain.repository.AuthRepository
-import es.rafapuig.pmdm.compose.proyecto.domain.usecase.LoginUseCase
-import es.rafapuig.pmdm.compose.proyecto.domain.usecase.RegisterUseCase
-import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.login.LoginViewModel
-import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.register.RegisterViewModel
+import es.rafapuig.pmdm.compose.proyecto.domain.usecase.auth.LoginUseCase
+import es.rafapuig.pmdm.compose.proyecto.domain.usecase.auth.RegisterUseCase
+import es.rafapuig.pmdm.compose.proyecto.presentation.auth.login.LoginViewModel
+import es.rafapuig.pmdm.compose.proyecto.presentation.auth.register.RegisterViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

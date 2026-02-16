@@ -11,11 +11,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import es.rafapuig.pmdm.compose.proyecto.feature.books.presentation.BooksRoute
-import es.rafapuig.pmdm.compose.proyecto.feature.home.presentation.HomeRoute
-import es.rafapuig.pmdm.compose.proyecto.feature.lists.presentation.ListsScreen
-import es.rafapuig.pmdm.compose.proyecto.feature.profile.presentation.ProfileRoute
-import es.rafapuig.pmdm.compose.proyecto.feature.reviews.presentation.ReviewsScreen
+import es.rafapuig.pmdm.compose.proyecto.presentation.books.BooksRoute
+import es.rafapuig.pmdm.compose.proyecto.presentation.home.HomeRoute
+import es.rafapuig.pmdm.compose.proyecto.presentation.lists.ListsScreen
+import es.rafapuig.pmdm.compose.proyecto.presentation.profile.ProfileRoute
+import es.rafapuig.pmdm.compose.proyecto.presentation.reviews.ReviewsScreen
 
 @Composable
 fun MainScreen(

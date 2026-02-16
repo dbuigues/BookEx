@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.login.LoginRoute
-import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.register.RegisterRoute
+import es.rafapuig.pmdm.compose.proyecto.presentation.auth.login.LoginRoute
+import es.rafapuig.pmdm.compose.proyecto.presentation.auth.register.RegisterRoute
 
 @Composable
 fun NavigationRoot() {
