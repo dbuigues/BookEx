@@ -49,10 +49,6 @@ import es.rafapuig.pmdm.compose.proyecto.domain.model.BookList
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.RadioButton
 
-/**
- * Pantalla principal de inicio de la aplicación
- * Muestra un saludo, subtítulo y una lista horizontal de libros populares
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -62,16 +58,7 @@ fun HomeScreen(
     onDismissBookDetail: () -> Unit = {}
 ) {
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {Text("BookEx")},
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        }
-    ) { innerPadding ->
+    Scaffold{ innerPadding ->
         HomeContent(
             state = state,
             onBookClick = onBookClick,

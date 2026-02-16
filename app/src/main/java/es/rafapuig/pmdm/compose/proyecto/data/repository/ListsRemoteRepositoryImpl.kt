@@ -2,6 +2,7 @@ package es.rafapuig.pmdm.compose.proyecto.data.repository
 
 import es.rafapuig.pmdm.compose.proyecto.data.remote.ApiResponse
 import es.rafapuig.pmdm.compose.proyecto.data.remote.safeApiCall
+import es.rafapuig.pmdm.compose.proyecto.data.remote.safeApiCallNoBody
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.BookApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.ListaApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.LibroListaApiService
@@ -48,7 +49,7 @@ class ListsRemoteRepositoryImpl(
 
     override suspend fun deleteList(ownerId: Long, listId: String): Boolean {
         val idLong = try { listId.toLong() } catch (_: Exception) { return false }
-        return when (safeApiCall { listaApiService.deleteLista(idLong) }) {
+        return when (safeApiCallNoBody { listaApiService.deleteLista(idLong) }) {
             is ApiResponse.Success -> true
             is ApiResponse.Error -> false
             is ApiResponse.Loading -> false
@@ -140,7 +141,7 @@ class ListsRemoteRepositoryImpl(
     }
 
     override suspend fun removeBookFromList(bookListId: Long): Boolean {
-        return when (safeApiCall { libroListaApiService.deleteLibroLista(bookListId) }) {
+        return when (safeApiCallNoBody { libroListaApiService.deleteLibroLista(bookListId) }) {
             is ApiResponse.Success -> true
             is ApiResponse.Error -> false
             is ApiResponse.Loading -> false

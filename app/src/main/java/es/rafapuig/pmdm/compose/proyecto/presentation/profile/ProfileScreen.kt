@@ -33,13 +33,7 @@ fun ProfileScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Mi Perfil") }
-            )
-        }
-    ) { innerPadding ->
+    Scaffold{ innerPadding ->
 
         Box(
             modifier = modifier
@@ -61,7 +55,6 @@ fun ProfileScreen(
                 ) {
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Foto de perfil
                     if (!state.user.profileImage.isNullOrBlank()) {
                         Base64Image(
                             base64String = state.user.profileImage,
@@ -92,7 +85,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Nombre de usuario
                     Text(
                         text = state.user.username,
                         fontSize = 28.sp,
@@ -102,7 +94,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Email
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -123,7 +114,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Tarjeta de información
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
@@ -160,7 +150,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Botón de cerrar sesión
                     OutlinedButton(
                         onClick = { onAction(ProfileIntent.Logout) },
                         modifier = Modifier
@@ -185,7 +174,6 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             } else {
-                // Estado de error o no hay usuario
                 Column(
                     modifier = Modifier
                         .fillMaxSize()

@@ -8,6 +8,7 @@ import es.rafapuig.pmdm.compose.proyecto.data.remote.api.BookApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.LibroListaApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.ListaApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.safeApiCall
+import es.rafapuig.pmdm.compose.proyecto.data.remote.safeApiCallNoBody
 import es.rafapuig.pmdm.compose.proyecto.domain.model.Review
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -154,7 +155,7 @@ class ReviewsViewModel(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
-                val response = safeApiCall { libroListaApiService.deleteLibroLista(reviewId) }
+                val response = safeApiCallNoBody { libroListaApiService.deleteLibroLista(reviewId) }
 
                 when (response) {
                     is ApiResponse.Success -> {

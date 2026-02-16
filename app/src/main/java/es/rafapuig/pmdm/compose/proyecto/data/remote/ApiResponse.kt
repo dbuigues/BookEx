@@ -25,3 +25,23 @@ suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): ApiRe
         )
     }
 }
+
+// Función especial para llamadas que no devuelven body (DELETE, etc)
+suspend fun safeApiCallNoBody(apiCall: suspend () -> retrofit2.Response<Void>): ApiResponse<Unit> {
+    return try {
+        val response = apiCall()
+        if (response.isSuccessful) {
+            ApiResponse.Success(Unit)
+        } else {
+            ApiResponse.Error(
+                message = response.errorBody()?.string() ?: "Unknown error",
+                code = response.code()
+            )
+        }
+    } catch (e: Exception) {
+        ApiResponse.Error(
+            message = e.message ?: "Network error occurred"
+        )
+    }
+}
+
