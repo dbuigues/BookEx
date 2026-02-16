@@ -58,7 +58,6 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Logo arriba a la izquierda
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo BookEx",

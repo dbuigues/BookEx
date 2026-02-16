@@ -6,6 +6,9 @@ import es.rafapuig.pmdm.compose.proyecto.data.remote.dto.GoogleBookDto
 import es.rafapuig.pmdm.compose.proyecto.data.remote.safeApiCall
 import es.rafapuig.pmdm.compose.proyecto.domain.model.Book
 import es.rafapuig.pmdm.compose.proyecto.domain.repository.BooksRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 /**
  * Implementación del repositorio de libros
@@ -15,22 +18,44 @@ class BooksRepositoryImpl(
     private val bookApiService: BookApiService
 ) : BooksRepository {
 
-    override suspend fun getPopularBooks(): Result<List<Book>> {
-        // Buscar libros populares usando una búsqueda genérica
-        // En el futuro esto podría ser un endpoint específico del backend
-        return when (val response = safeApiCall {
-            bookApiService.searchBooks("best sellers", maxResults = 10)
-        }) {
-            is ApiResponse.Success -> {
-                val books = response.data.map { it.toDomain() }
-                Result.success(books)
+    override suspend fun getPopularBooks(): Result<List<Book>> = coroutineScope {
+        // Lista de títulos de libros populares para buscar
+        val popularTitles = listOf(
+            "1984",
+            "Crónica de una muerte anunciada",
+            "El gran Gatsby",
+            "Te di ojos y miraste las tinieblas",
+            "Rebelión en la granja",
+            "Los papeles de aspern"
+        )
+
+        // Buscar todos los libros en paralelo
+        val deferredBooks = popularTitles.map { title ->
+            async {
+                try {
+                    when (val response = safeApiCall {
+                        bookApiService.searchBooksByTitle(titulo = title)
+                    }) {
+                        is ApiResponse.Success -> {
+                            // Tomar solo el primer resultado (el más relevante)
+                            response.data.firstOrNull()?.toDomain()
+                        }
+                        is ApiResponse.Error -> null
+                        is ApiResponse.Loading -> null
+                    }
+                } catch (e: Exception) {
+                    null
+                }
             }
-            is ApiResponse.Error -> {
-                Result.failure(Exception(response.message))
-            }
-            is ApiResponse.Loading -> {
-                Result.failure(Exception("Loading"))
-            }
+        }
+
+        // Esperar a que todas las búsquedas terminen
+        val books = deferredBooks.awaitAll().filterNotNull()
+
+        return@coroutineScope if (books.isNotEmpty()) {
+            Result.success(books)
+        } else {
+            Result.failure(Exception("No se pudieron cargar libros populares"))
         }
     }
 
