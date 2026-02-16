@@ -1,15 +1,11 @@
 package es.rafapuig.pmdm.compose.proyecto.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.login.LoginRoute
 import es.rafapuig.pmdm.compose.proyecto.feature.auth.presentation.register.RegisterRoute
-import es.rafapuig.pmdm.compose.proyecto.feature.home.presentacion.HomeScreen
-import es.rafapuig.pmdm.compose.proyecto.feature.profile.presentation.ProfileRoute
 
 @Composable
 fun NavigationRoot() {
@@ -22,7 +18,7 @@ fun NavigationRoot() {
                     navController.navigate(Routes.REGISTER_SCREEN)
                 },
                 onLoginSuccess = { _ ->
-                    navController.navigate(Routes.PROFILE_SCREEN) {
+                    navController.navigate(Routes.MAIN_GRAPH) {
                         popUpTo(Routes.LOGIN_SCREEN) { inclusive = true }
                     }
                 }
@@ -40,20 +36,8 @@ fun NavigationRoot() {
                 }
             )
         }
-        composable(
-            route = Routes.HOME_SCREEN,
-            arguments = listOf(navArgument("username") { type = NavType.StringType })
-        ) {
-            val username = it.arguments?.getString("username") ?: ""
-            HomeScreen(
-                username = username,
-                onNavigateToProfile = {
-                    navController.navigate(Routes.PROFILE_SCREEN)
-                }
-            )
-        }
-        composable(Routes.PROFILE_SCREEN) {
-            ProfileRoute(
+        composable(Routes.MAIN_GRAPH) {
+            MainScreen(
                 onLogout = {
                     navController.navigate(Routes.LOGIN_SCREEN) {
                         popUpTo(0) { inclusive = true }

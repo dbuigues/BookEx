@@ -38,15 +38,7 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mi Perfil") },
-                actions = {
-                    IconButton(onClick = { onAction(ProfileIntent.RefreshProfile) }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Actualizar"
-                        )
-                    }
-                }
+                title = { Text("Mi Perfil") }
             )
         }
     ) { innerPadding ->
@@ -56,17 +48,6 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Logo arriba a la izquierda
-            Image(
-                painter = painterResource(id = es.rafapuig.pmdm.compose.proyecto.R.drawable.logo),
-                contentDescription = "Logo BookEx",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .align(Alignment.TopStart),
-                contentScale = ContentScale.Crop
-            )
 
             if (state.isLoading) {
                 CircularProgressIndicator(
@@ -162,11 +143,6 @@ fun ProfileScreen(
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
-
-                            ProfileInfoRow(
-                                label = "ID de usuario",
-                                value = "#${state.user.id}"
-                            )
 
                             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
