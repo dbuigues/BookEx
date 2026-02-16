@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle del Libro | BookEx</title>
     <link rel="stylesheet" href="../estilos/styles.css">
-    <!--PASAR STYLE DE ABAJO A ARCHIVO APARTE-->
-    <style>
-        #bookAuthor {
-            padding-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="../estilos/resenyar.css">
 </head>
 <body>
     <header>
@@ -43,10 +38,10 @@
         </div>
     </div>
 
-    <div style="height: 0; min-height: 100%;">
+    <div class="review-container">
         <div class="book-detail">
-        <div class="rating-container">
-            <label>Puntuación:</label>
+        <div class="rating-container" style="display: flex; align-items: center; justify-content: center;">
+            <label id="rating-label">Puntuación:</label>
             <div class="star-rating">
                 <input type="radio" id="star5" name="rating" value="5" />
                 <label for="star5" title="5 estrellas">★</label>
