@@ -5,6 +5,27 @@ const modal = document.getElementById('modal');
 const BotonCrearLista = document.getElementById('crear-lista');
 let sesion;
 
+function mostrarAlerta(mensaje) {
+  return new Promise((resolve) => {
+    const dialog = document.createElement('dialog');
+    dialog.classList.add('alerta-centrada');
+    dialog.innerHTML = `
+      <div style="padding: 20px;">
+        <p>${mensaje}</p>
+        <button id="ok">OK</button>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    dialog.showModal();
+    
+    dialog.querySelector('#ok').addEventListener('click', () => {
+      dialog.close();
+      dialog.remove();
+      resolve();
+    });
+  });
+}
+
 // Obtener libros de una lista
 const obtenerLibrosLista = async (idLista) => {
   try {
@@ -61,18 +82,18 @@ const eliminarLibroLista = async (idLibroLista, tituloLibro, idLista) => {
     });
 
     if (response.ok) {
-      alert('Libro eliminado de la lista exitosamente');
+      mostrarAlerta('Libro eliminado de la lista exitosamente');
       // Recargar los libros de la lista
       const librosContainer = document.querySelector(`[data-lista-id="${idLista}"]`);
       if (librosContainer) {
         await toggleLibrosLista(idLista, librosContainer, true);
       }
     } else {
-      alert('Error al eliminar el libro de la lista');
+      mostrarAlerta('Error al eliminar el libro de la lista');
     }
   } catch (error) {
     console.error('Error al eliminar libro de la lista:', error);
-    alert('Error al eliminar el libro de la lista');
+    mostrarAlerta('Error al eliminar el libro de la lista');
   }
 };
 
@@ -143,14 +164,14 @@ const eliminarLista = async (idLista, nombreLista) => {
     });
 
     if (response.ok) {
-      alert('Lista eliminada exitosamente');
+      mostrarAlerta('Lista eliminada exitosamente');
       verListas(sesion);
     } else {
-      alert('Error al eliminar la lista');
+      mostrarAlerta('Error al eliminar la lista');
     }
   } catch (error) {
     console.error('Error al eliminar lista:', error);
-    alert('Error al eliminar la lista');
+    mostrarAlerta('Error al eliminar la lista');
   }
 };
 
