@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -15,6 +14,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +34,18 @@ import coil.compose.AsyncImage
 import es.rafapuig.pmdm.compose.proyecto.R
 import es.rafapuig.pmdm.compose.proyecto.domain.model.Book
 import es.rafapuig.pmdm.compose.proyecto.ui.theme.ProyectoTheme
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import android.widget.Toast
+import es.rafapuig.pmdm.compose.proyecto.data.remote.RetrofitClient
+import es.rafapuig.pmdm.compose.proyecto.data.remote.api.ListaApiService
+import es.rafapuig.pmdm.compose.proyecto.data.remote.api.LibroListaApiService
+import es.rafapuig.pmdm.compose.proyecto.data.repository.ListsRemoteRepositoryImpl
+import es.rafapuig.pmdm.compose.proyecto.data.local.TokenManager
+import es.rafapuig.pmdm.compose.proyecto.domain.model.BookList
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.RadioButton
 
 /**
  * Pantalla principal de inicio de la aplicación
@@ -332,6 +345,16 @@ fun BookDetailDialog(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val tokenManager = remember { TokenManager(context) }
+    val ownerId = tokenManager.getUserId().takeIf { it >= 0 } ?: -1L
+    val coroutineScope = rememberCoroutineScope()
+
+    var showListsDialog by remember { mutableStateOf(false) }
+    var lists by remember { mutableStateOf<List<BookList>>(emptyList()) }
+    var selectedListId by remember { mutableStateOf<String?>(null) }
+    var feedback by remember { mutableStateOf<String?>(null) }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -339,6 +362,10 @@ fun BookDetailDialog(
             decorFitsSystemWindows = true
         )
     ) {
+        val listaService = remember { RetrofitClient.createService(ListaApiService::class.java) }
+        val libroListaService = remember { RetrofitClient.createService(LibroListaApiService::class.java) }
+        val repo = remember { ListsRemoteRepositoryImpl(listaService, libroListaService) }
+
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -375,7 +402,7 @@ fun BookDetailDialog(
                     }
                 }
 
-                Divider()
+                HorizontalDivider()
 
                 // Contenido del diálogo
                 Column(
@@ -439,7 +466,7 @@ fun BookDetailDialog(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Divider()
+                    HorizontalDivider()
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -492,11 +519,95 @@ fun BookDetailDialog(
                                 )
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    // Botón para agregar a lista
+                    Button(onClick = {
+                        if (ownerId < 0) {
+                            Toast.makeText(context, "Necesitas iniciar sesión", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+                        // cargar listas y mostrar diálogo
+                        coroutineScope.launch {
+                            lists = repo.getListsForOwner(ownerId)
+                            selectedListId = lists.firstOrNull()?.id
+                            showListsDialog = true
+                        }
+                    }) {
+                        Text("Agregar a una lista")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Mensaje de feedback
+                    feedback?.let { msg ->
+                        Text(text = msg, color = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
+        }
+
+        // Diálogo para seleccionar lista
+        if (showListsDialog) {
+            AlertDialog(
+                onDismissRequest = { showListsDialog = false },
+                title = { Text("Selecciona una lista") },
+                text = {
+                    if (lists.isEmpty()) {
+                        Text("No tienes listas. Crea una en la sección 'Mis listas'.")
+                    } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            lists.forEach { l ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 6.dp)
+                                        .selectable(
+                                            selected = (selectedListId == l.id),
+                                            onClick = { selectedListId = l.id }
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(selected = (selectedListId == l.id), onClick = { selectedListId = l.id })
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = l.name)
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val id = selectedListId
+                        if (id != null) {
+                            coroutineScope.launch {
+                                val ok = repo.addBookToList(ownerId, id, book.id)
+                                if (ok) {
+                                    feedback = "Libro agregado a ${lists.find { it.id == id }?.name}"
+                                } else {
+                                    feedback = "No se pudo agregar (ya existe o error)"
+                                }
+                                showListsDialog = false
+                            }
+                        }
+                    }) { Text("Agregar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showListsDialog = false }) { Text("Cancelar") }
+                }
+            )
+        }
+
+        // Feedback simple en diálogo modal
+        if (feedback != null) {
+            AlertDialog(
+                onDismissRequest = { feedback = null },
+                confirmButton = { TextButton(onClick = { feedback = null }) { Text("OK") } },
+                text = { Text(feedback ?: "") }
+            )
         }
     }
 }
