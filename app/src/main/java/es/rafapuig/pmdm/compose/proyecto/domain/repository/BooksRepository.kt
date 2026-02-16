@@ -21,4 +21,9 @@ interface BooksRepository {
         query: String,
         maxResults: Int = 20
     ): Result<List<Book>>
+
+    /**
+     * Busca libros por título
+     */
+    suspend fun searchBooksByTitle(title: String): Result<List<Book>>
 }

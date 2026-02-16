@@ -6,7 +6,7 @@ import es.rafapuig.pmdm.compose.proyecto.domain.repository.BooksRepository
 class SearchBooksUseCase(
     private val booksRepository: BooksRepository
 ) {
-    suspend operator fun invoke(query: String): Result<List<Book>> {
-        return booksRepository.searchBooks(query = query, maxResults = 20)
+    suspend operator fun invoke(title: String): Result<List<Book>> {
+        return booksRepository.searchBooksByTitle(title = title)
     }
 }

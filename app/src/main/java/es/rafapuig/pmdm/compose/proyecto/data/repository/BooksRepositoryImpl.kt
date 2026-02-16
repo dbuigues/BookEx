@@ -45,6 +45,18 @@ class BooksRepositoryImpl(
             is ApiResponse.Loading -> Result.failure(Exception("Loading"))
         }
     }
+
+    override suspend fun searchBooksByTitle(title: String): Result<List<Book>> {
+        if (title.isBlank()) return Result.success(emptyList())
+
+        return when (val response = safeApiCall {
+            bookApiService.searchBooksByTitle(titulo = title)
+        }) {
+            is ApiResponse.Success -> Result.success(response.data.map { it.toDomain() })
+            is ApiResponse.Error -> Result.failure(Exception(response.message))
+            is ApiResponse.Loading -> Result.failure(Exception("Loading"))
+        }
+    }
 }
 
 /**
