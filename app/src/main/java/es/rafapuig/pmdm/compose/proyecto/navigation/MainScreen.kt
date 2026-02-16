@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import es.rafapuig.pmdm.compose.proyecto.feature.books.presentation.BooksScreen
-import es.rafapuig.pmdm.compose.proyecto.feature.home.presentation.HomeScreen
+import es.rafapuig.pmdm.compose.proyecto.feature.home.presentation.HomeRoute
 import es.rafapuig.pmdm.compose.proyecto.feature.lists.presentation.ListsScreen
 import es.rafapuig.pmdm.compose.proyecto.feature.profile.presentation.ProfileRoute
 import es.rafapuig.pmdm.compose.proyecto.feature.reviews.presentation.ReviewsScreen
@@ -60,7 +60,7 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Routes.HOME_SCREEN) {
-                HomeScreen()
+                HomeRoute()
             }
             composable(Routes.BOOKS_SCREEN) {
                 BooksScreen()

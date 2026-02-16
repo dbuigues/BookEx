@@ -2,6 +2,7 @@ package es.rafapuig.pmdm.compose.proyecto
 
 import android.app.Application
 import es.rafapuig.pmdm.compose.proyecto.di.authModule
+import es.rafapuig.pmdm.compose.proyecto.di.homeModule
 import es.rafapuig.pmdm.compose.proyecto.di.networkModule
 import es.rafapuig.pmdm.compose.proyecto.di.profileModule
 import org.koin.android.ext.koin.androidContext
@@ -13,7 +14,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(networkModule, authModule, profileModule)
+            modules(networkModule, authModule, profileModule, homeModule)
         }
     }
 }
