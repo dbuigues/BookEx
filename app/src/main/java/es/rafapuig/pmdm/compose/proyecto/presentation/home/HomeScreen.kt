@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.*
@@ -351,9 +353,11 @@ fun BookDetailDialog(
     val coroutineScope = rememberCoroutineScope()
 
     var showListsDialog by remember { mutableStateOf(false) }
+    var showWriteReviewDialog by remember { mutableStateOf(false) }
     var lists by remember { mutableStateOf<List<BookList>>(emptyList()) }
     var selectedListId by remember { mutableStateOf<String?>(null) }
     var feedback by remember { mutableStateOf<String?>(null) }
+    var isSubmittingReview by remember { mutableStateOf(false) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -364,7 +368,8 @@ fun BookDetailDialog(
     ) {
         val listaService = remember { RetrofitClient.createService(ListaApiService::class.java) }
         val libroListaService = remember { RetrofitClient.createService(LibroListaApiService::class.java) }
-        val repo = remember { ListsRemoteRepositoryImpl(listaService, libroListaService) }
+        val bookApiService = remember { RetrofitClient.createService(es.rafapuig.pmdm.compose.proyecto.data.remote.api.BookApiService::class.java) }
+        val repo = remember { ListsRemoteRepositoryImpl(listaService, libroListaService, bookApiService) }
 
         Card(
             modifier = modifier
@@ -532,11 +537,24 @@ fun BookDetailDialog(
                         // cargar listas y mostrar diálogo
                         coroutineScope.launch {
                             lists = repo.getListsForOwner(ownerId)
-                            selectedListId = lists.firstOrNull()?.id
+                            selectedListId = lists.firstOrNull { !it.name.equals("Reviews", ignoreCase = true) }?.id
                             showListsDialog = true
                         }
                     }) {
                         Text("Agregar a una lista")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Botón para escribir reseña
+                    OutlinedButton(onClick = {
+                        if (ownerId < 0) {
+                            Toast.makeText(context, "Necesitas iniciar sesión", Toast.LENGTH_SHORT).show()
+                            return@OutlinedButton
+                        }
+                        showWriteReviewDialog = true
+                    }) {
+                        Text("Escribir reseña")
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -552,15 +570,18 @@ fun BookDetailDialog(
 
         // Diálogo para seleccionar lista
         if (showListsDialog) {
+            // Filtrar la lista "Reviews" del selector
+            val selectableLists = lists.filter { !it.name.equals("Reviews", ignoreCase = true) }
+
             AlertDialog(
                 onDismissRequest = { showListsDialog = false },
                 title = { Text("Selecciona una lista") },
                 text = {
-                    if (lists.isEmpty()) {
+                    if (selectableLists.isEmpty()) {
                         Text("No tienes listas. Crea una en la sección 'Mis listas'.")
                     } else {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            lists.forEach { l ->
+                            selectableLists.forEach { l ->
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -609,5 +630,155 @@ fun BookDetailDialog(
                 text = { Text(feedback ?: "") }
             )
         }
+
+        // Diálogo para escribir reseña
+        if (showWriteReviewDialog) {
+            WriteReviewDialog(
+                book = book,
+                isLoading = isSubmittingReview,
+                onDismiss = { showWriteReviewDialog = false },
+                onSubmit = { rating, reviewText ->
+                    coroutineScope.launch {
+                        isSubmittingReview = true
+                        try {
+                            val reviewsListId = repo.getReviewsListId(ownerId)
+                            if (reviewsListId != null) {
+                                val success = repo.addBookWithReview(
+                                    ownerId = ownerId,
+                                    listId = reviewsListId,
+                                    bookId = book.id,
+                                    review = reviewText,
+                                    rating = rating
+                                )
+                                if (success) {
+                                    feedback = "¡Reseña publicada con éxito!"
+                                    showWriteReviewDialog = false
+                                } else {
+                                    feedback = "No se pudo publicar la reseña"
+                                }
+                            } else {
+                                feedback = "No se encontró la lista Reviews"
+                            }
+                        } catch (e: Exception) {
+                            feedback = "Error: ${e.message}"
+                        } finally {
+                            isSubmittingReview = false
+                        }
+                    }
+                }
+            )
+        }
     }
+}
+
+@Composable
+private fun WriteReviewDialog(
+    book: Book,
+    isLoading: Boolean,
+    onDismiss: () -> Unit,
+    onSubmit: (rating: Int, reviewText: String) -> Unit
+) {
+    var rating by remember { mutableIntStateOf(0) }
+    var reviewText by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = { if (!isLoading) onDismiss() },
+        title = { Text("Escribir reseña") },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Info del libro
+                Text(
+                    text = book.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    maxLines = 2
+                )
+                Text(
+                    text = "por ${book.author}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Puntuación
+                Text(
+                    text = "Tu puntuación",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(5) { index ->
+                        IconButton(onClick = { rating = index + 1 }) {
+                            Icon(
+                                imageVector = if (index < rating)
+                                    Icons.Filled.Star
+                                else
+                                    Icons.Filled.StarBorder,
+                                contentDescription = "Estrella ${index + 1}",
+                                tint = if (index < rating)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Campo de texto para la reseña
+                Text(
+                    text = "Tu reseña",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = reviewText,
+                    onValueChange = { reviewText = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    placeholder = { Text("Escribe tu opinión...") },
+                    maxLines = 6
+                )
+
+                if (rating == 0 || reviewText.isBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Debes seleccionar puntuación y escribir tu reseña",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onSubmit(rating, reviewText) },
+                enabled = !isLoading && rating > 0 && reviewText.isNotBlank()
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                } else {
+                    Text("Publicar")
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                enabled = !isLoading
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
 }
