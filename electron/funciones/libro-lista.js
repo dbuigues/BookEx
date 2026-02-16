@@ -21,6 +21,27 @@ function getSesionActiva() {
     return sessionStorage.getItem('sesionActiva');
 }
 
+function mostrarAlerta(mensaje) {
+  return new Promise((resolve) => {
+    const dialog = document.createElement('dialog');
+    dialog.classList.add('alerta-centrada');
+    dialog.innerHTML = `
+      <div style="padding: 20px;">
+        <p>${mensaje}</p>
+        <button id="ok">OK</button>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    dialog.showModal();
+    
+    dialog.querySelector('#ok').addEventListener('click', () => {
+      dialog.close();
+      dialog.remove();
+      resolve();
+    });
+  });
+}
+
 // Obtener las listas del usuario
 async function obtenerListasUsuario(correo) {
     try {
@@ -58,7 +79,7 @@ async function agregarLibroALista(idLista, bookId) {
         // Verificar si el libro ya está en la lista
         const libroExistente = await buscarLibroEnLista(idLista, bookId);
         if (libroExistente) {
-            alert('Este libro ya está en la lista seleccionada');
+            mostrarAlerta('Este libro ya está en la lista seleccionada');
             return false;
         }
 
@@ -95,14 +116,14 @@ async function agregarLibroALista(idLista, bookId) {
 async function mostrarModalListas() {
     const sesion = getSesionActiva();
     if (!sesion) {
-        alert('Debes iniciar sesión para guardar libros en tus listas');
+        mostrarAlerta('Debes iniciar sesión para guardar libros en tus listas');
         window.close(); 
         return;
     }
 
     const listas = await obtenerListasUsuario(sesion);
     if (listas.length === 0) {
-        alert('No tienes listas creadas. Crea una lista primero en la página "Mis listas".');
+        mostrarAlerta('No tienes listas creadas. Crea una lista primero en la página "Mis listas".');
         return;
     }
 
@@ -121,10 +142,10 @@ async function mostrarModalListas() {
             const bookId = getBookId();
             const exito = await agregarLibroALista(lista.idLista, bookId);
             if (exito) {
-                alert(`Libro guardado en la lista "${lista.nombreLista}"`);
+                mostrarAlerta(`Libro guardado en la lista "${lista.nombreLista}"`);
                 modal.style.display = 'none';
             } else {
-                alert('Error al guardar el libro. Intenta nuevamente.');
+                mostrarAlerta('Error al guardar el libro. Intenta nuevamente.');
             }
         };
         listasContainer.appendChild(listaItem);
@@ -190,13 +211,13 @@ async function obtenerListaReviews(correo) {
 async function guardarResena() {
     const sesion = getSesionActiva();
     if (!sesion) {
-        alert('Debes iniciar sesión para escribir una reseña');
+        mostrarAlerta('Debes iniciar sesión para escribir una reseña');
         return;
     }
 
     const bookId = getBookId();
     if (!bookId) {
-        alert('No se encontró el libro.');
+        mostrarAlerta('No se encontró el libro.');
         return;
     }
 
@@ -213,19 +234,19 @@ async function guardarResena() {
     const reviewText = document.getElementById('reviewText').value.trim();
 
     if (!puntuacion) {
-        alert('Por favor, selecciona una puntuación con las estrellas');
+        mostrarAlerta('Por favor, selecciona una puntuación con las estrellas');
         return;
     }
 
     if (!reviewText) {
-        alert('Por favor, escribe tu reseña');
+        mostrarAlerta('Por favor, escribe tu reseña');
         return;
     }
 
     // Buscar la lista "Reviews" del usuario
     const listaReviews = await obtenerListaReviews(sesion);
     if (!listaReviews) {
-        alert('No se encontró tu lista de Reviews. Contacta con soporte.');
+        mostrarAlerta('No se encontró tu lista de Reviews. Contacta con soporte.');
         return;
     }
 
@@ -250,9 +271,9 @@ async function guardarResena() {
         });
 
         if (response.ok) {
-            alert('¡Reseña guardada exitosamente!');
+            mostrarAlerta('¡Reseña guardada exitosamente!');
         } else {
-            alert('Error al guardar la reseña. Intenta nuevamente.');
+            mostrarAlerta('Error al guardar la reseña. Intenta nuevamente.');
         }
     } else {
         // El libro ya existe en Reviews, actualizar directamente (reutilizar objeto)
@@ -267,9 +288,9 @@ async function guardarResena() {
         });
 
         if (updateResponse.ok) {
-            alert('¡Reseña actualizada exitosamente!');
+            mostrarAlerta('¡Reseña actualizada exitosamente!');
         } else {
-            alert('Error al actualizar la reseña. Intenta nuevamente.');
+            mostrarAlerta('Error al actualizar la reseña. Intenta nuevamente.');
         }
     }
 }
