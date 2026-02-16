@@ -50,20 +50,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = "Logo BookEx",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text("BookEx")
-                    }
-                },
+                title = {Text("BookEx")},
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
@@ -107,7 +94,6 @@ private fun HomeContent(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Encabezado con saludo
         Text(
             text = "¡Bienvenido a BookEx!",
             fontSize = 28.sp,
@@ -118,7 +104,6 @@ private fun HomeContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Subtítulo
         Text(
             text = "Tu plataforma para compartir opiniones sobre libros",
             fontSize = 16.sp,
