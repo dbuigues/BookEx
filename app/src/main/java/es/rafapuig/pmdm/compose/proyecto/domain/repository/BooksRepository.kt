@@ -12,4 +12,13 @@ interface BooksRepository {
      * @return Result con la lista de libros populares o un error
      */
     suspend fun getPopularBooks(): Result<List<Book>>
+
+    /**
+     * Busca libros en la API por un término (query).
+     * Nota: el backend actual expone búsqueda, no "listado completo".
+     */
+    suspend fun searchBooks(
+        query: String,
+        maxResults: Int = 20
+    ): Result<List<Book>>
 }

@@ -33,6 +33,18 @@ class BooksRepositoryImpl(
             }
         }
     }
+
+    override suspend fun searchBooks(query: String, maxResults: Int): Result<List<Book>> {
+        if (query.isBlank()) return Result.success(emptyList())
+
+        return when (val response = safeApiCall {
+            bookApiService.searchBooks(query = query, maxResults = maxResults)
+        }) {
+            is ApiResponse.Success -> Result.success(response.data.map { it.toDomain() })
+            is ApiResponse.Error -> Result.failure(Exception(response.message))
+            is ApiResponse.Loading -> Result.failure(Exception("Loading"))
+        }
+    }
 }
 
 /**
