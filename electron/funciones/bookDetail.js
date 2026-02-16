@@ -1,5 +1,16 @@
-// bookDetail.js
 // Este script carga la información del libro seleccionado desde la API de Google Books
+
+async function loadLibroLista() {
+    try {
+        const url = '../funciones/libro-lista.js?ts=' + Date.now();
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('fetch failed ' + res.status);
+        const text = await res.text();
+        (0, eval)(text);
+    } catch (e) {
+        console.error('error cargando libro-lista.js dinámicamente', e);
+    }
+}
 
 const API_KEY = "AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0";
 
@@ -66,3 +77,18 @@ async function loadBookDetail() {
 }
 
 document.addEventListener('DOMContentLoaded', loadBookDetail);
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadLibroLista();
+
+    const saveButton = document.getElementById('saveButton');
+    if (saveButton) {
+        saveButton.addEventListener('click', () => {
+            if (typeof mostrarModalListas === 'function') {
+                mostrarModalListas();
+            } else {
+                console.log('mostrarModalListas NOT available (appended)');
+            }
+        });
+    }
+});

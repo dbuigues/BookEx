@@ -1,4 +1,3 @@
-// libro-lista.js
 // Funcionalidad para guardar libros en listas del usuario
 
 const API_BASE_URL = 'https://bookex-u97b.onrender.com/api';
@@ -117,12 +116,13 @@ async function mostrarModalListas() {
     const sesion = getSesionActiva();
     if (!sesion) {
         mostrarAlerta('Debes iniciar sesión para guardar libros en tus listas');
-        window.close(); 
+        // evitar cerrar la ventana principal; solo mostrar el mensaje
         return;
     }
 
     const listas = await obtenerListasUsuario(sesion);
     if (listas.length === 0) {
+        console.log('sin listas');
         mostrarAlerta('No tienes listas creadas. Crea una lista primero en la página "Mis listas".');
         return;
     }
@@ -303,15 +303,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitReviewBtn = document.getElementById('submitReview');
 
     if (submitReviewBtn) {
-        submitReviewBtn.addEventListener('click', guardarResena);
+        submitReviewBtn.addEventListener('click', () => {
+            guardarResena();
+        });
     }
 
     if (saveButton) {
-        saveButton.addEventListener('click', mostrarModalListas);
+        saveButton.addEventListener('click', () => {
+            console.log('saveButton clicked');
+            mostrarModalListas();
+        });
     }
 
     if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', cerrarModal);
+        closeModalBtn.addEventListener('click', () => {
+            cerrarModal();
+        });
     }
 
     // Cerrar modal al hacer clic fuera de él
