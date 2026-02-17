@@ -59,11 +59,26 @@ fun HomeScreen(
 ) {
 
     Scaffold{ innerPadding ->
-        HomeContent(
-            state = state,
-            onBookClick = onBookClick,
-            modifier = modifier.padding(innerPadding)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Imagen de fondo
+            Image(
+                painter = painterResource(id = R.drawable.wallpaper_2),
+                contentDescription = "Fondo",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.15f
+            )
+
+            HomeContent(
+                state = state,
+                onBookClick = onBookClick,
+                modifier = modifier
+            )
+        }
 
         // Diálogo de detalles del libro
         state.selectedBook?.let { book ->

@@ -1,5 +1,6 @@
 package es.rafapuig.pmdm.compose.proyecto.presentation.lists
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import es.rafapuig.pmdm.compose.proyecto.R
 import es.rafapuig.pmdm.compose.proyecto.data.repository.ListsRemoteRepositoryImpl
 import es.rafapuig.pmdm.compose.proyecto.data.remote.RetrofitClient
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.BookApiService
@@ -98,6 +101,16 @@ fun ListsScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
+            // Imagen de fondo
+            Image(
+                painter = painterResource(id = R.drawable.wallpaper_2),
+                contentDescription = "Fondo",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.15f
+            )
+
+            Box(modifier = Modifier.fillMaxSize()) {
             // Mostrar detalle de lista o listado de listas
             if (selectedList != null) {
                 // Vista de detalle de lista con sus libros
@@ -224,6 +237,7 @@ fun ListsScreen(
                         }
                     }
                 )
+            }
             }
         }
     }

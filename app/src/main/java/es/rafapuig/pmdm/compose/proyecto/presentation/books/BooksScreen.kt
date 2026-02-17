@@ -46,12 +46,25 @@ fun BooksScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
+        Box(
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
+            // Imagen de fondo
+            Image(
+                painter = painterResource(id = R.drawable.wallpaper_2),
+                contentDescription = "Fondo",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.15f
+            )
+
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
             // Buscador
             OutlinedTextField(
                 value = state.query,
@@ -132,6 +145,7 @@ fun BooksScreen(
                     }
                 }
             }
+        }
         }
 
         state.selectedBook?.let { book ->

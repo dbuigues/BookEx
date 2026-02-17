@@ -19,7 +19,6 @@ class BooksRepositoryImpl(
 ) : BooksRepository {
 
     override suspend fun getPopularBooks(): Result<List<Book>> = coroutineScope {
-        // Lista de títulos de libros populares para buscar
         val popularTitles = listOf(
             "1984",
             "El gran Gatsby",
@@ -39,7 +38,6 @@ class BooksRepositoryImpl(
                         bookApiService.searchBooksByTitle(titulo = title)
                     }) {
                         is ApiResponse.Success -> {
-                            // Tomar solo el primer resultado (el más relevante)
                             response.data.firstOrNull()?.toDomain()
                         }
                         is ApiResponse.Error -> null
@@ -51,7 +49,6 @@ class BooksRepositoryImpl(
             }
         }
 
-        // Esperar a que todas las búsquedas terminen
         val books = deferredBooks.awaitAll().filterNotNull()
 
         return@coroutineScope if (books.isNotEmpty()) {

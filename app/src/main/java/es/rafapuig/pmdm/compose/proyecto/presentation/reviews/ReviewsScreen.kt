@@ -1,5 +1,6 @@
 package es.rafapuig.pmdm.compose.proyecto.presentation.reviews
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import es.rafapuig.pmdm.compose.proyecto.R
 import es.rafapuig.pmdm.compose.proyecto.domain.model.Review
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.Lifecycle
@@ -61,6 +64,16 @@ fun ReviewsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // Imagen de fondo
+            Image(
+                painter = painterResource(id = R.drawable.wallpaper_2),
+                contentDescription = "Fondo",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.15f
+            )
+
+            Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
                     Column(
@@ -149,6 +162,7 @@ fun ReviewsScreen(
                         }
                     }
                 }
+            }
             }
         }
     }
