@@ -1,5 +1,6 @@
 package es.rafapuig.pmdm.compose.proyecto.presentation.reviews
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.RateReview
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.*
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -309,6 +312,34 @@ fun ReviewDetailDialog(
     review: Review,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+
+    // Función para compartir la reseña
+    val shareReview = {
+        val starsEmoji = "⭐".repeat(review.rating)
+        val shareText = buildString {
+            appendLine("📚 reseña en BookEx.")
+            appendLine()
+            appendLine("Libro: ${review.bookTitle}")
+            appendLine("Autor: ${review.bookAuthor}")
+            appendLine("Puntuación: $starsEmoji (${review.rating}/5)")
+            appendLine()
+            appendLine("Mi opinión:")
+            appendLine(review.reviewText)
+            appendLine()
+            appendLine("Compartido desde BookEx")
+        }
+
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, "Compartir reseña")
+        context.startActivity(shareIntent)
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -412,8 +443,26 @@ fun ReviewDetailDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cerrar")
+            Row {
+                // Botón de compartir
+                TextButton(
+                    onClick = shareReview
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Compartir",
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Compartir")
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Botón de cerrar
+                TextButton(onClick = onDismiss) {
+                    Text("Cerrar")
+                }
             }
         }
     )
