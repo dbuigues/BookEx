@@ -213,7 +213,11 @@ fun RegisterScreen(
                         imeAction = ImeAction.Next
                     ),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -233,7 +237,11 @@ fun RegisterScreen(
                         imeAction = ImeAction.Next
                     ),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -264,7 +272,11 @@ fun RegisterScreen(
                         imeAction = ImeAction.Next
                     ),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -295,7 +307,11 @@ fun RegisterScreen(
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
