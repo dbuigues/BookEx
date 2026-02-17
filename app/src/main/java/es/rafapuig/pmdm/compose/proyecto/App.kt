@@ -5,6 +5,7 @@ import es.rafapuig.pmdm.compose.proyecto.di.authModule
 import es.rafapuig.pmdm.compose.proyecto.di.booksModule
 import es.rafapuig.pmdm.compose.proyecto.di.homeModule
 import es.rafapuig.pmdm.compose.proyecto.di.listsModule
+import es.rafapuig.pmdm.compose.proyecto.di.navigationModule
 import es.rafapuig.pmdm.compose.proyecto.di.networkModule
 import es.rafapuig.pmdm.compose.proyecto.di.profileModule
 import es.rafapuig.pmdm.compose.proyecto.di.reviewsModule
@@ -17,7 +18,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(networkModule, listsModule, authModule, profileModule, homeModule, booksModule, reviewsModule)
+            modules(networkModule, listsModule, authModule, profileModule, homeModule, booksModule, reviewsModule, navigationModule)
         }
     }
 }
