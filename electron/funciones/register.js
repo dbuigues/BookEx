@@ -35,13 +35,18 @@ async function register(userToAdd) {
 
 	let valido = true;
 	let mailregex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-	if (document.getElementById('regName').value.length > 255 || document.getElementById('regPassword').value.length > 255 || !mailregex.test(document.getElementById("regEmail").value) || document.getElementById("regFotoPerfil").files.length == 0) {
+	const pass = document.getElementById('regPassword').value;
+	const pass2 = document.getElementById('regPassword2') ? document.getElementById('regPassword2').value : '';
+	if (document.getElementById('regName').value.length > 255 || pass.length > 255 || !mailregex.test(document.getElementById("regEmail").value) || document.getElementById("regFotoPerfil").files.length == 0) {
 		console.log(document.getElementById('regName').value.length);
-		console.log(document.getElementById('regPassword').value.length);
+		console.log(pass.length);
 		console.log(document.getElementById("regEmail").value);
 		console.log(document.getElementById("regFotoPerfil").files.length);
 		console.log(mailregex.test(document.getElementById("regEmail")));
 		errorDiv.innerText = `Completa correctamente todos los campos.`;
+		valido = false;
+	} else if (pass !== pass2) {
+		errorDiv.innerText = `Las contraseñas no coinciden.`;
 		valido = false;
 	}
 
@@ -72,12 +77,14 @@ async function register(userToAdd) {
 				document.getElementById('regName').value = '';
 				document.getElementById('regEmail').value = '';
 				document.getElementById('regPassword').value = '';
+				if (document.getElementById('regPassword2')) document.getElementById('regPassword2').value = '';
 			} else {
 				console.error('Error al crear usuario:', data);
 				errorDiv.innerText = `Error: El correo ya está en uso.`;
 				document.getElementById('regName').value = '';
 				document.getElementById('regEmail').value = '';
 				document.getElementById('regPassword').value = '';
+				if (document.getElementById('regPassword2')) document.getElementById('regPassword2').value = '';
 			}
 
 		} catch (error) {

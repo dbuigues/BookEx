@@ -29,7 +29,7 @@
     <!-- CONTENIDO PRINCIPAL -->
     <div class="container animate-slideDown">
 
-        <!-- CONTENIDO AQUÍ -->
+        <!-- REGISTRO -->
         <div class="section" id="registerSection">
             <h2 class="section-title">Registrarse</h2>
             <form onsubmit="return false">
@@ -40,6 +40,8 @@
                     <input type="email" id="regEmail" name="regEmail" required placeholder="Correo electrónico" maxlength="255"><br>
                     <label for="regPassword">Contraseña</label>
                     <input type="password" id="regPassword" name="regPassword" required placeholder="Contraseña" maxlength="255"><br>
+                    <label for="regPassword2">Repetir contraseña</label>
+                    <input type="password" id="regPassword2" name="regPassword2" required placeholder="Repite la contraseña" maxlength="255"><br>
                     <label for="regFotoPerfil">Foto de Perfil:</label>
                     <input type="file" id="regFotoPerfil" accept="image/*">
                 </div>
@@ -58,7 +60,7 @@
             </form>
         </div>
 
-        <!-- Formulario de inicio de sesión -->
+        <!-- LOGIN -->
         <div class="section" id="loginSection">
             <h2 class="section-title">Iniciar sesión</h2>
             <form onsubmit="return false">
@@ -83,7 +85,7 @@
             </form>
         </div>
 
-        <!-- Información del usuario logueado -->
+        <!-- BIENVENIDO -->
         <div id="userInfo" class="hidden">
             <div class="page-title">
                 <h1 id="welcomeUser">Bienvenido de nuevo</h1>
