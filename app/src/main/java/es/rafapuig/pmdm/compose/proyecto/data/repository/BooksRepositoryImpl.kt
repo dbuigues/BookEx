@@ -22,11 +22,13 @@ class BooksRepositoryImpl(
         // Lista de títulos de libros populares para buscar
         val popularTitles = listOf(
             "1984",
-            "Crónica de una muerte anunciada",
             "El gran Gatsby",
             "Te di ojos y miraste las tinieblas",
             "Rebelión en la granja",
-            "Los papeles de aspern"
+            "Crónica de una muerte anunciada",
+            "El viejo y el mar",
+            "El extranjero Camus",
+            "Los papeles de aspern Henry James"
         )
 
         // Buscar todos los libros en paralelo
