@@ -1,12 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -14,9 +8,5 @@
 .cxx
 local.properties
 **/node_modules/
-backend/ServidorRestLibros/.idea/inspectionProfiles/Project_Default.xml
-.idea/vcs.xml
-.idea/deploymentTargetSelector.xml
-.idea/misc.xml
-.idea/copilot.data.migration.agent.xml
-.idea/copilot.data.migration.edit.xml
+/.idea
+/backend/ServidorRestLibros/.idea/
