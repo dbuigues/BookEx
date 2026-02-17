@@ -794,7 +794,7 @@ textarea {
     transition: all 0.3s ease;
     font-weight: 500;
     white-space: nowrap;
-    flex-shrink: 0;
+    
 }
 
 .btn-eliminar-resena:hover {

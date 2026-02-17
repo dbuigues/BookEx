@@ -7,6 +7,38 @@ const GOOGLE_BOOKS_KEY = 'AIzaSyAA8hrOze05X9GGh9KbKBuRd4Lt_9zCAt0';
 // Pre-calentar servidor
 fetch(`${API_BASE}/usuarios`, { method: 'HEAD' }).catch(() => {});
 
+// Confirmación no bloqueante (evita usar el confirm() nativo que puede bloquear en Electron)
+function mostrarConfirmacion(mensaje) {
+    return new Promise((resolve) => {
+        const dialog = document.createElement('dialog');
+        dialog.className = 'alerta-centrada';
+        dialog.innerHTML = `
+            <div style="padding: 20px; text-align: center;">
+                <p style="margin-bottom: 18px;">${mensaje}</p>
+                <div>
+                    <button id="confirm-yes" style="padding:8px 18px; margin-right:10px; background:#e74c3c; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Eliminar</button>
+                    <button id="confirm-no" style="padding:8px 18px; background:#bdc3c7; color:#2c3e50; border:none; border-radius:6px; cursor:pointer;">Cancelar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+        dialog.showModal();
+
+        const yes = dialog.querySelector('#confirm-yes');
+        const no = dialog.querySelector('#confirm-no');
+
+        function cleanup(result) {
+            try { dialog.close(); } catch (e) {}
+            dialog.remove();
+            resolve(result);
+        }
+
+        yes.addEventListener('click', () => cleanup(true), { once: true });
+        no.addEventListener('click', () => cleanup(false), { once: true });
+        dialog.addEventListener('cancel', () => cleanup(false), { once: true });
+    });
+}
+
 async function cargarResenasUsuario() {
     const correo = sessionStorage.getItem('sesionActiva');
     const container = document.getElementById('resenas-container');
@@ -98,9 +130,8 @@ async function cargarResenasUsuario() {
 }
 
 async function eliminarResena(idLibroLista) {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
-        return;
-    }
+    const confirmado = await mostrarConfirmacion('¿Estás seguro de que quieres eliminar esta reseña?');
+    if (!confirmado) return;
 
     try {
         const response = await fetch(`${API_BASE}/libros-listas/${idLibroLista}`, {
