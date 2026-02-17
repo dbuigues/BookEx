@@ -492,7 +492,7 @@ button:active {
 }
 
 .lista-wrapper {
-    margin-bottom: 20px;
+    margin: 20px 60px;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -511,7 +511,7 @@ button:active {
 
 .lista-header:hover {
     background: linear-gradient(135deg, #d5dfe5 0%, #c5d5e0 100%);
-    transform: translateX(5px);
+    padding-left: 30px;
 }
 
 .lista-nombre {
@@ -794,7 +794,6 @@ textarea {
     transition: all 0.3s ease;
     font-weight: 500;
     white-space: nowrap;
-    
 }
 
 .btn-eliminar-resena:hover {
