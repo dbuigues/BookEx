@@ -80,6 +80,15 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // Imagen de fondo
+            Image(
+                painter = painterResource(id = R.drawable.book_wallpaper),
+                contentDescription = "Fondo de libros",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.3f
+            )
+
             // Logo arriba a la izquierda
             Image(
                 painter = painterResource(id = R.drawable.logo),

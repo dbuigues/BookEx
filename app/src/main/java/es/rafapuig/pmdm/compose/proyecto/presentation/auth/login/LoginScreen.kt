@@ -58,7 +58,13 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-
+            Image(
+                painter = painterResource(id = R.drawable.book_wallpaper),
+                contentDescription = "Fondo de libros",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.3f
+            )
 
             Column(
                 modifier = Modifier
