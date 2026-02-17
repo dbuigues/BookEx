@@ -67,6 +67,14 @@ public class ListaService {
     }
 
     public void deleteById(Long id) {
+        Optional<Lista> lista = listaRepository.findById(id);
+        if (lista.isPresent()) {
+            String nombreLista = lista.get().getNombreLista();
+            // Listas protegidas que no se pueden eliminar
+            if ("Favoritos".equals(nombreLista) || "Reviews".equals(nombreLista)) {
+                throw new IllegalArgumentException("No se puede eliminar la lista protegida: " + nombreLista);
+            }
+        }
         listaRepository.deleteById(id);
     }
 

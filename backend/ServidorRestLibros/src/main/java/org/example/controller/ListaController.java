@@ -57,7 +57,11 @@ public class ListaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLista(@PathVariable Long id) {
-        listaService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            listaService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
     }
 }

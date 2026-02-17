@@ -7,6 +7,8 @@ import es.rafapuig.pmdm.compose.proyecto.data.remote.api.BookApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.LibroListaApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.api.ListaApiService
 import es.rafapuig.pmdm.compose.proyecto.data.remote.repository.AuthRemoteRepository
+import es.rafapuig.pmdm.compose.proyecto.data.repository.BooksRepositoryImpl
+import es.rafapuig.pmdm.compose.proyecto.domain.repository.BooksRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -23,4 +25,7 @@ val networkModule = module {
 
     // Remote Repositories
     single { AuthRemoteRepository(get()) }
+
+    // Books Repository
+    single<BooksRepository> { BooksRepositoryImpl(get()) }
 }

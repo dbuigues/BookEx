@@ -47,12 +47,10 @@ fun ListsScreen(
     val ownerId = tokenManager.getUserId().takeIf { it >= 0 } ?: -1L
     val coroutineScope = rememberCoroutineScope()
 
-    // crear servicios retrofit y repositorio remoto
-    val listaService = remember { RetrofitClient.createService(ListaApiService::class.java) }
-    val libroListaService = remember { RetrofitClient.createService(LibroListaApiService::class.java) }
+    // Obtener el servicio de libros para cargar detalles
     val bookApiService = remember { RetrofitClient.createService(BookApiService::class.java) }
-    val repo = remember { ListsRemoteRepositoryImpl(listaService, libroListaService, bookApiService) }
-    val viewModel = remember { ListsViewModel(repo, ownerId) }
+
+    val viewModel: ListsViewModel = org.koin.androidx.compose.koinViewModel(parameters = { org.koin.core.parameter.parametersOf(ownerId) })
 
     val isLoading by viewModel.isLoading.collectAsState()
     val lists by viewModel.lists.collectAsState()

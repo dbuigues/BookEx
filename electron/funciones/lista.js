@@ -209,15 +209,19 @@ const verListas = async (sesion) => {
         const botonesContainer = document.createElement('div');
         botonesContainer.className = 'lista-botones';
 
-        const botonEliminar = document.createElement('button');
-        botonEliminar.className = 'btn-eliminar-lista';
-        botonEliminar.innerHTML = 'Eliminar';
-        botonEliminar.onclick = (e) => {
-          e.stopPropagation();
-          eliminarLista(lista.idLista, lista.nombreLista);
-        };
+        // No mostrar botón eliminar para listas protegidas (Favoritos y Reviews)
+        const listasProtegidas = ['Favoritos', 'Reviews'];
+        if (!listasProtegidas.includes(lista.nombreLista)) {
+          const botonEliminar = document.createElement('button');
+          botonEliminar.className = 'btn-eliminar-lista';
+          botonEliminar.innerHTML = 'Eliminar';
+          botonEliminar.onclick = (e) => {
+            e.stopPropagation();
+            eliminarLista(lista.idLista, lista.nombreLista);
+          };
 
-        botonesContainer.appendChild(botonEliminar);
+          botonesContainer.appendChild(botonEliminar);
+        }
         listaHeader.appendChild(listaNombre);
         listaHeader.appendChild(botonesContainer);
 

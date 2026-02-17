@@ -1,7 +1,5 @@
 package es.rafapuig.pmdm.compose.proyecto.di
 
-import es.rafapuig.pmdm.compose.proyecto.data.repository.BooksRepositoryImpl
-import es.rafapuig.pmdm.compose.proyecto.domain.repository.BooksRepository
 import es.rafapuig.pmdm.compose.proyecto.domain.usecase.home.GetPopularBooksUseCase
 import es.rafapuig.pmdm.compose.proyecto.presentation.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
@@ -13,8 +11,6 @@ import org.koin.dsl.module
  */
 val homeModule = module {
 
-    // Repository
-    single<BooksRepository> { BooksRepositoryImpl(get()) }
 
     // Use Cases
     factory { GetPopularBooksUseCase(get()) }
