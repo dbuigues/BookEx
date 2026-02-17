@@ -159,9 +159,9 @@ fun ListsScreen(
                     onDeleteBook = { book -> bookToDelete = book }
                 )
             } else {
-                // Vista de listado de listas
+                // Vista de listado de listas (filtrando la lista "reviews")
                 ListsContent(
-                    lists = lists,
+                    lists = lists.filter { it.name.lowercase() != "reviews" },
                     isLoading = isLoading,
                     error = error,
                     onListClick = { lista -> viewModel.selectList(lista) },
