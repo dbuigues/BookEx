@@ -11,6 +11,7 @@ data class Review(
     val bookCoverUrl: String?,
     val reviewText: String,
     val rating: Int,
-    val publishedDate: String?
+    val publishedDate: String?,
+    val userName: String? = null
 )
 

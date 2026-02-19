@@ -5,6 +5,6 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val reviewsModule = module {
-    viewModel { ReviewsViewModel(get(), get(), get(), get()) }
+    viewModel { ReviewsViewModel(get(), get(), get(), get(), get()) }
 }
 

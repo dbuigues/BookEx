@@ -10,8 +10,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.RateReview
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -55,117 +57,58 @@ fun ReviewsScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Mis Reseñas") }
-            )
-        }
-    ) { innerPadding ->
-        Box(
+    val tabTitles = listOf("Mis reseñas", "Reseñas públicas")
+
+    Scaffold() { innerPadding ->
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Imagen de fondo
-            Image(
-                painter = painterResource(id = R.drawable.wallpaper_2),
-                contentDescription = "Fondo",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                alpha = 0.15f
-            )
-
-            Box(modifier = Modifier.fillMaxSize()) {
-            when {
-                uiState.isLoading -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(50.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Cargando tus reseñas...",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-
-                uiState.errorMessage != null -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.RateReview,
-                            contentDescription = null,
-                            modifier = Modifier.size(80.dp),
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = uiState.errorMessage ?: "Error desconocido",
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { viewModel.onAction(ReviewsIntent.LoadReviews) }) {
-                            Text("Reintentar")
-                        }
-                    }
-                }
-
-                uiState.reviews.isEmpty() -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.RateReview,
-                            contentDescription = null,
-                            modifier = Modifier.size(80.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "No tienes reseñas",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Busca un libro y añádelo a tu lista de Reviews",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(vertical = 16.dp)
-                    ) {
-                        items(uiState.reviews) { review ->
-                            ReviewCard(
-                                review = review,
-                                onClick = { showReviewDetail = review },
-                                onDeleteClick = { showDeleteDialog = review }
+            // Tab bar
+            PrimaryTabRow(
+                selectedTabIndex = uiState.selectedTab,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ) {
+                tabTitles.forEachIndexed { index, title ->
+                    Tab(
+                        selected = uiState.selectedTab == index,
+                        onClick = { viewModel.onAction(ReviewsIntent.SelectTab(index)) },
+                        text = {
+                            Text(
+                                text = title,
+                                fontWeight = if (uiState.selectedTab == index) FontWeight.Bold else FontWeight.Normal
                             )
                         }
-                    }
+                    )
                 }
             }
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Imagen de fondo
+                Image(
+                    painter = painterResource(id = R.drawable.wallpaper_2),
+                    contentDescription = "Fondo",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    alpha = 0.15f
+                )
+
+                when (uiState.selectedTab) {
+                    0 -> MyReviewsContent(
+                        uiState = uiState,
+                        onRetry = { viewModel.onAction(ReviewsIntent.LoadReviews) },
+                        onReviewClick = { showReviewDetail = it },
+                        onDeleteClick = { showDeleteDialog = it }
+                    )
+                    1 -> PublicReviewsContent(
+                        uiState = uiState,
+                        onRetry = { viewModel.onAction(ReviewsIntent.LoadPublicReviews) },
+                        onReviewClick = { showReviewDetail = it },
+                        onSearchQueryChange = { viewModel.onAction(ReviewsIntent.SearchPublicReviews(it)) }
+                    )
+                }
             }
         }
     }
@@ -198,8 +141,295 @@ fun ReviewsScreen(
     showReviewDetail?.let { review ->
         ReviewDetailDialog(
             review = review,
-            onDismiss = { showReviewDetail = null }
+            onDismiss = { showReviewDetail = null },
+            isOwn = uiState.selectedTab == 0
         )
+    }
+}
+
+@Composable
+private fun MyReviewsContent(
+    uiState: ReviewsState,
+    onRetry: () -> Unit,
+    onReviewClick: (Review) -> Unit,
+    onDeleteClick: (Review) -> Unit
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        when {
+            uiState.isLoading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(50.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Cargando tus reseñas...",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            uiState.errorMessage != null -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.RateReview,
+                        contentDescription = null,
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = uiState.errorMessage,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = onRetry) {
+                        Text("Reintentar")
+                    }
+                }
+            }
+
+            uiState.reviews.isEmpty() -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.RateReview,
+                        contentDescription = null,
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "No tienes reseñas",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Busca un libro y añádelo a tu lista de Reviews",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    items(uiState.reviews) { review ->
+                        ReviewCard(
+                            review = review,
+                            onClick = { onReviewClick(review) },
+                            onDeleteClick = { onDeleteClick(review) },
+                            showUser = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PublicReviewsContent(
+    uiState: ReviewsState,
+    onRetry: () -> Unit,
+    onReviewClick: (Review) -> Unit,
+    onSearchQueryChange: (String) -> Unit = {}
+) {
+    val filtered = uiState.filteredPublicReviews
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Barra de búsqueda
+        OutlinedTextField(
+            value = uiState.publicSearchQuery,
+            onValueChange = onSearchQueryChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            placeholder = { Text("Buscar por título del libro...") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Buscar"
+                )
+            },
+            trailingIcon = {
+                if (uiState.publicSearchQuery.isNotEmpty()) {
+                    IconButton(onClick = { onSearchQueryChange("") }) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Limpiar"
+                        )
+                    }
+                }
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(24.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                focusedContainerColor = MaterialTheme.colorScheme.surface
+            )
+        )
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                // Spinner central solo si cargando y no hay ninguna reseña aún
+                uiState.isLoadingPublic && uiState.publicReviews.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(50.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Cargando reseñas públicas...",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                uiState.publicErrorMessage != null && uiState.publicReviews.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.RateReview,
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = uiState.publicErrorMessage,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = onRetry) {
+                            Text("Reintentar")
+                        }
+                    }
+                }
+
+                !uiState.isLoadingPublic && uiState.publicReviews.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.RateReview,
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "No hay reseñas públicas",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Aún no hay reseñas de otros usuarios",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                filtered.isEmpty() && uiState.publicSearchQuery.isNotBlank() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            modifier = Modifier.size(80.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Sin resultados para \"${uiState.publicSearchQuery}\"",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(filtered) { review ->
+                            ReviewCard(
+                                review = review,
+                                onClick = { onReviewClick(review) },
+                                onDeleteClick = null,
+                                showUser = true
+                            )
+                        }
+
+                        // Indicador de carga al final mientras se cargan más
+                        if (uiState.isLoadingPublic) {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        strokeWidth = 2.dp,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = "Cargando más reseñas...",
+                                        fontSize = 14.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -207,7 +437,8 @@ fun ReviewsScreen(
 fun ReviewCard(
     review: Review,
     onClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: (() -> Unit)?,
+    showUser: Boolean = false
 ) {
     Card(
         modifier = Modifier
@@ -222,15 +453,29 @@ fun ReviewCard(
                 .padding(12.dp)
         ) {
             // Portada del libro
-            AsyncImage(
-                model = review.bookCoverUrl,
-                contentDescription = review.bookTitle,
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+            if (review.bookCoverUrl != null) {
+                AsyncImage(
+                    model = review.bookCoverUrl,
+                    contentDescription = review.bookTitle,
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(120.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.logo),
+                    error = painterResource(id = R.drawable.logo)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = review.bookTitle,
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(120.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Fit
+                )
+            }
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -238,6 +483,19 @@ fun ReviewCard(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                // Mostrar nombre de usuario si es reseña pública
+                if (showUser && review.userName != null) {
+                    Text(
+                        text = review.userName,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
+
                 Text(
                     text = review.bookTitle,
                     fontWeight = FontWeight.Bold,
@@ -281,13 +539,15 @@ fun ReviewCard(
                 }
             }
 
-            // Botón eliminar
-            IconButton(onClick = onDeleteClick) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Eliminar reseña",
-                    tint = MaterialTheme.colorScheme.error
-                )
+            // Botón eliminar (solo para reseñas propias)
+            if (onDeleteClick != null) {
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar reseña",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
@@ -310,7 +570,8 @@ fun RatingStars(rating: Int, maxRating: Int = 5) {
 @Composable
 fun ReviewDetailDialog(
     review: Review,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    isOwn: Boolean = true
 ) {
     val context = LocalContext.current
 
@@ -370,21 +631,45 @@ fun ReviewDetailDialog(
                     verticalAlignment = Alignment.Top
                 ) {
                     // Portada
-                    AsyncImage(
-                        model = review.bookCoverUrl,
-                        contentDescription = review.bookTitle,
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(120.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (review.bookCoverUrl != null) {
+                        AsyncImage(
+                            model = review.bookCoverUrl,
+                            contentDescription = review.bookTitle,
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(120.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(id = R.drawable.logo),
+                            error = painterResource(id = R.drawable.logo)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = review.bookTitle,
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(120.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
 
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column {
+                        // Show user name for public reviews
+                        if (!isOwn && review.userName != null) {
+                            Text(
+                                text = "Reseña de ${review.userName}",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
                         Text(
-                            text = "Tu puntuación",
+                            text = if (isOwn) "Tu puntuación" else "Puntuación",
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )
@@ -419,7 +704,7 @@ fun ReviewDetailDialog(
 
                 // Título de la reseña
                 Text(
-                    text = "Tu reseña",
+                    text = if (isOwn) "Tu reseña" else "Reseña",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
