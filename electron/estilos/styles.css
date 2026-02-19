@@ -776,7 +776,8 @@ textarea {
 
 .review-footer {
     display: flex;
-    justify-content: center;
+    /* align contents to right edge of card */
+    justify-content: flex-end;
     align-items: center;
     gap: 15px;
     margin-top: auto;
@@ -794,6 +795,11 @@ textarea {
     transition: all 0.3s ease;
     font-weight: 500;
     white-space: nowrap;
+    /* no full width; wrap to content */
+    display: inline-block;
+    width: auto;
+    /* push right inside flex footer if desired */
+    margin-left: auto;
 }
 
 .btn-eliminar-resena:hover {
