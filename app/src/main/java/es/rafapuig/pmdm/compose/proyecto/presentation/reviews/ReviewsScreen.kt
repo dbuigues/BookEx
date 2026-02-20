@@ -575,11 +575,11 @@ fun ReviewDetailDialog(
 ) {
     val context = LocalContext.current
 
-    // Función para compartir la reseña
+
     val shareReview = {
         val starsEmoji = "⭐".repeat(review.rating)
         val shareText = buildString {
-            appendLine("📚 reseña en BookEx.")
+            appendLine("📚 Reseña en BookEx.")
             appendLine()
             appendLine("Libro: ${review.bookTitle}")
             appendLine("Autor: ${review.bookAuthor}")
