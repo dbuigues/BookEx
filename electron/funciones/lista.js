@@ -26,6 +26,38 @@ function mostrarAlerta(mensaje) {
   });
 }
 
+// confirmación no bloqueante igual que en showReviews.js
+function mostrarConfirmacion(mensaje) {
+  return new Promise((resolve) => {
+    const dialog = document.createElement('dialog');
+    dialog.classList.add('alerta-centrada');
+    dialog.innerHTML = `
+      <div style="padding: 20px; text-align: center;">
+        <p style="margin-bottom: 18px;">${mensaje}</p>
+        <div>
+          <button id="confirm-yes" style="padding:8px 18px; margin-right:10px; background:#e74c3c; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Eliminar</button>
+          <button id="confirm-no" style="padding:8px 18px; background:#bdc3c7; color:#2c3e50; border:none; border-radius:6px; cursor:pointer;">Cancelar</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    dialog.showModal();
+
+    const yes = dialog.querySelector('#confirm-yes');
+    const no = dialog.querySelector('#confirm-no');
+
+    function cleanup(result) {
+      try { dialog.close(); } catch (e) {}
+      dialog.remove();
+      resolve(result);
+    }
+
+    yes.addEventListener('click', () => cleanup(true), { once: true });
+    no.addEventListener('click', () => cleanup(false), { once: true });
+    dialog.addEventListener('cancel', () => cleanup(false), { once: true });
+  });
+}
+
 // Obtener libros de una lista
 const obtenerLibrosLista = async (idLista) => {
   try {
@@ -72,7 +104,8 @@ const obtenerInfoLibro = async (googleBookId) => {
 
 // Eliminar libro de una lista
 const eliminarLibroLista = async (idLibroLista, tituloLibro, idLista) => {
-  if (!confirm(`¿Estás seguro de que deseas eliminar "${tituloLibro}" de esta lista?`)) {
+  const confirmado = await mostrarConfirmacion(`¿Estás seguro de que deseas eliminar "${tituloLibro}" de esta lista?`);
+  if (!confirmado) {
     return;
   }
 
@@ -154,7 +187,8 @@ const toggleLibrosLista = async (idLista, librosContainer, forceOpen = false) =>
 
 // Eliminar lista
 const eliminarLista = async (idLista, nombreLista) => {
-  if (!confirm(`¿Estás seguro de que deseas eliminar la lista "${nombreLista}"?`)) {
+  const confirmado = await mostrarConfirmacion(`¿Estás seguro de que deseas eliminar la lista "${nombreLista}"?`);
+  if (!confirmado) {
     return;
   }
 
